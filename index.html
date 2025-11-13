@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人导航</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --work-color: #2c5aa0;
+            --social-color: #e74c3c;
+            --entertainment-color: #9b59b6;
+            --learning-color: #27ae60;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.4;
+            padding: 15px;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 13px;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .categories-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .category-tab {
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .category-tab.active {
+            font-weight: bold;
+        }
+        
+        .category-content {
+            display: none;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+            min-height: 300px;
+        }
+        
+        .category-content.active {
+            display: block;
+        }
+        
+        #work-content {
+            background-color: rgba(44, 90, 160, 0.05);
+            border: 1px solid rgba(44, 90, 160, 0.2);
+        }
+        
+        #social-content {
+            background-color: rgba(231, 76, 60, 0.05);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        #entertainment-content {
+            background-color: rgba(155, 89, 182, 0.05);
+            border: 1px solid rgba(155, 89, 182, 0.2);
+        }
+        
+        #learning-content {
+            background-color: rgba(39, 174, 96, 0.05);
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+        
+        #work-content .category-header {
+            border-bottom: 1px solid var(--work-color);
+        }
+        
+        #social-content .category-header {
+            border-bottom: 1px solid var(--social-color);
+        }
+        
+        #entertainment-content .category-header {
+            border-bottom: 1px solid var(--entertainment-color);
+        }
+        
+        #learning-content .category-header {
+            border-bottom: 1px solid var(--learning-color);
+        }
+        
+        .category-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        #work-content .category-title {
+            color: var(--work-color);
+        }
+        
+        #social-content .category-title {
+            color: var(--social-color);
+        }
+        
+        #entertainment-content .category-title {
+            color: var(--entertainment-color);
+        }
+        
+        #learning-content .category-title {
+            color: var(--learning-color);
+        }
+        
+        .category-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        #work-content .action-btn {
+            color: var(--work-color);
+        }
+        
+        #social-content .action-btn {
+            color: var(--social-color);
+        }
+        
+        #entertainment-content .action-btn {
+            color: var(--entertainment-color);
+        }
+        
+        #learning-content .action-btn {
+            color: var(--learning-color);
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+        }
+        
+        .website-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+        
+        .website-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .website-card.dragging {
+            opacity: 0.5;
+        }
+        
+        .website-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 5px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        #work-content .website-icon {
+            background-color: rgba(44, 90, 160, 0.1);
+            color: var(--work-color);
+        }
+        
+        #social-content .website-icon {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--social-color);
+        }
+        
+        #entertainment-content .website-icon {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: var(--entertainment-color);
+        }
+        
+        #learning-content .website-icon {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--learning-color);
+        }
+        
+        .website-name {
+            font-weight: bold;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .website-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .delete-btn, .edit-btn {
+            position: absolute;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-btn {
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+        }
+        
+        .edit-btn {
+            top: -5px;
+            left: -5px;
+            background: #3498db;
+        }
+        
+        .website-card:hover .delete-btn,
+        .website-card:hover .edit-btn {
+            display: flex;
+        }
+        
+        .edit-mode .website-card {
+            cursor: move;
+        }
+        
+        .edit-mode .delete-btn,
+        .edit-mode .edit-btn {
+            display: flex;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 320px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #2c5aa0;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #ddd;
+            color: #333;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .website-logo-preview {
+            width: 35px;
+            height: 35px;
+            margin: 8px auto;
+            background-color: #f0f4ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .websites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 10px;
+            }
+            
+            .website-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .website-name {
+                font-size: 10px;
+            }
+            
+            .category-tab {
+                padding: 6px 15px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>我的个人导航</h1>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="输入关键词进行全网搜索...">
+                    <button id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="categories-tabs">
+            <div class="category-tab active" data-category="work">工作</div>
+            <div class="category-tab" data-category="social">社交</div>
+            <div class="category-tab" data-category="entertainment">娱乐</div>
+            <div class="category-tab" data-category="learning">学习</div>
+        </div>
+        
+        <!-- 工作板块 -->
+        <div class="category-content active" id="work-content">
+            <div class="category-header">
+                <h2 class="category-title">工作</h2>
+                <div class="category-actions">
+                    <button class="action-btn edit-mode-toggle" data-category="work">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="action-btn add-website-btn" data-category="work">
+                        <i class="fas fa-plus"></i> 添加
+                    </button>
+                </div>
+            </div>
+            <div class="websites-grid" id="work-grid">
+                <!-- 工作网站将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 社交板块 -->
+        <div class="category-content" id="social-content">
+            <div class="category-header">
+                <h2 class="category-title">社交</h2>
+                <div class="category-actions">
+                    <button class="action-btn edit-mode-toggle" data-category="social">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="action-btn add-website-btn" data-category="social">
+                        <i class="fas fa-plus"></i> 添加
+                    </button>
+                </div>
+            </div>
+            <div class="websites-grid" id="social-grid">
+                <!-- 社交网站将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 娱乐板块 -->
+        <div class="category-content" id="entertainment-content">
+            <div class="category-header">
+                <h2 class="category-title">娱乐</h2>
+                <div class="category-actions">
+                    <button class="action-btn edit-mode-toggle" data-category="entertainment">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="action-btn add-website-btn" data-category="entertainment">
+                        <i class="fas fa-plus"></i> 添加
+                    </button>
+                </div>
+            </div>
+            <div class="websites-grid" id="entertainment-grid">
+                <!-- 娱乐网站将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 学习板块 -->
+        <div class="category-content" id="learning-content">
+            <div class="category-header">
+                <h2 class="category-title">学习</h2>
+                <div class="category-actions">
+                    <button class="action-btn edit-mode-toggle" data-category="learning">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="action-btn add-website-btn" data-category="learning">
+                        <i class="fas fa-plus"></i> 添加
+                    </button>
+                </div>
+            </div>
+            <div class="websites-grid" id="learning-grid">
+                <!-- 学习网站将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加网站模态框 -->
+    <div class="modal" id="addWebsiteModal">
+        <div class="modal-content">
+            <h3>添加新网站</h3>
+            <form id="addWebsiteForm">
+                <div class="form-group">
+                    <label for="websiteName">网站名称</label>
+                    <input type="text" id="websiteName" required>
+                </div>
+                <div class="form-group">
+                    <label for="websiteUrl">网站URL</label>
+                    <input type="url" id="websiteUrl" required>
+                </div>
+                <div class="form-group">
+                    <label for="websiteCategory">分类</label>
+                    <select id="websiteCategory" required>
+                        <option value="work">工作</option>
+                        <option value="social">社交</option>
+                        <option value="entertainment">娱乐</option>
+                        <option value="learning">学习</option>
+                    </select>
+                </div>
+                <div class="website-logo-preview" id="logoPreview">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑网站模态框 -->
+    <div class="modal" id="editWebsiteModal">
+        <div class="modal-content">
+            <h3>编辑网站</h3>
+            <form id="editWebsiteForm">
+                <input type="hidden" id="editWebsiteId">
+                <div class="form-group">
+                    <label for="editWebsiteName">网站名称</label>
+                    <input type="text" id="editWebsiteName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editWebsiteUrl">网站URL</label>
+                    <input type="url" id="editWebsiteUrl" required>
+                </div>
+                <div class="form-group">
+                    <label for="editWebsiteCategory">分类</label>
+                    <select id="editWebsiteCategory" required>
+                        <option value="work">工作</option>
+                        <option value="social">社交</option>
+                        <option value="entertainment">娱乐</option>
+                        <option value="learning">学习</option>
+                    </select>
+                </div>
+                <div class="website-logo-preview" id="editLogoPreview">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 从本地存储加载网站数据或使用默认数据
+        function loadWebsites() {
+            const savedWebsites = localStorage.getItem('myNavigationWebsites');
+            if (savedWebsites) {
+                return JSON.parse(savedWebsites);
+            } else {
+                return [
+                    {
+                        id: 1,
+                        name: "Google",
+                        url: "https://www.google.com",
+                        category: "work",
+                        icon: "<i class='fab fa-google'></i>"
+                    },
+                    {
+                        id: 2,
+                        name: "GitHub",
+                        url: "https://github.com",
+                        category: "work",
+                        icon: "<i class='fab fa-github'></i>"
+                    },
+                    {
+                        id: 3,
+                        name: "微信",
+                        url: "https://wx.qq.com",
+                        category: "social",
+                        icon: "<i class='fab fa-weixin'></i>"
+                    },
+                    {
+                        id: 4,
+                        name: "知乎",
+                        url: "https://www.zhihu.com",
+                        category: "social",
+                        icon: "<i class='fas fa-quora'></i>"
+                    },
+                    {
+                        id: 5,
+                        name: "YouTube",
+                        url: "https://www.youtube.com",
+                        category: "entertainment",
+                        icon: "<i class='fab fa-youtube'></i>"
+                    },
+                    {
+                        id: 6,
+                        name: "Bilibili",
+                        url: "https://www.bilibili.com",
+                        category: "entertainment",
+                        icon: "<i class='fas fa-play-circle'></i>"
+                    },
+                    {
+                        id: 7,
+                        name: "Coursera",
+                        url: "https://www.coursera.org",
+                        category: "learning",
+                        icon: "<i class='fas fa-graduation-cap'></i>"
+                    },
+                    {
+                        id: 8,
+                        name: "MDN Web",
+                        url: "https://developer.mozilla.org",
+                        category: "learning",
+                        icon: "<i class='fab fa-firefox'></i>"
+                    }
+                ];
+            }
+        }
+
+        // 保存网站数据到本地存储
+        function saveWebsites(websites) {
+            localStorage.setItem('myNavigationWebsites', JSON.stringify(websites));
+        }
+
+        // 初始化网站数据
+        let websites = loadWebsites();
+        let nextId = websites.length > 0 ? Math.max(...websites.map(w => w.id)) + 1 : 1;
+
+        // 获取DOM元素
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const categoryContents = document.querySelectorAll('.category-content');
+        const addWebsiteModal = document.getElementById('addWebsiteModal');
+        const addWebsiteForm = document.getElementById('addWebsiteForm');
+        const editWebsiteModal = document.getElementById('editWebsiteModal');
+        const editWebsiteForm = document.getElementById('editWebsiteForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const logoPreview = document.getElementById('logoPreview');
+        const editLogoPreview = document.getElementById('editLogoPreview');
+        const editModeButtons = document.querySelectorAll('.edit-mode-toggle');
+        const addWebsiteButtons = document.querySelectorAll('.add-website-btn');
+
+        // 当前状态
+        let isEditMode = false;
+        let currentCategory = 'work';
+        let dragSrcElement = null;
+
+        // 渲染网站
+        function renderWebsites() {
+            // 清空所有网格
+            document.querySelectorAll('.websites-grid').forEach(grid => {
+                grid.innerHTML = '';
+            });
+            
+            // 按分类渲染网站
+            websites.forEach(website => {
+                const grid = document.getElementById(`${website.category}-grid`);
+                if (grid) {
+                    const card = document.createElement('div');
+                    card.className = 'website-card';
+                    card.setAttribute('data-id', website.id);
+                    card.setAttribute('draggable', 'true');
+                    
+                    card.innerHTML = `
+                        <button class="delete-btn" data-id="${website.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="edit-btn" data-id="${website.id}">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <a href="${website.url}" target="_blank" class="website-link">
+                            <div class="website-icon">${website.icon}</div>
+                            <div class="website-name">${website.name}</div>
+                        </a>
+                    `;
+                    
+                    grid.appendChild(card);
+                }
+            });
+            
+            // 为删除按钮添加事件监听器
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    deleteWebsite(id);
+                });
+            });
+            
+            // 为编辑按钮添加事件监听器
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    editWebsite(id);
+                });
+            });
+            
+            // 初始化拖拽功能
+            initDragAndDrop();
+        }
+
+        // 初始渲染
+        renderWebsites();
+
+        // 搜索功能
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            
+            if (!searchTerm) return;
+            
+            // 使用Google进行全网搜索，在新标签页打开
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
+        }
+
+        searchButton.addEventListener('click', performSearch);
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 分类标签切换
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const category = tab.getAttribute('data-category');
+                
+                // 更新活动标签
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 更新活动内容
+                categoryContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`${category}-content`).classList.add('active');
+                
+                currentCategory = category;
+            });
+        });
+
+        // 编辑模式切换
+        editModeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                const content = document.getElementById(`${category}-content`);
+                
+                isEditMode = !content.classList.contains('edit-mode');
+                
+                // 切换当前板块的编辑模式
+                if (isEditMode) {
+                    content.classList.add('edit-mode');
+                    btn.innerHTML = '<i class="fas fa-check"></i> 完成';
+                } else {
+                    content.classList.remove('edit-mode');
+                    btn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
+                }
+            });
+        });
+
+        // 添加网站功能
+        addWebsiteButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                document.getElementById('websiteCategory').value = category;
+                addWebsiteModal.style.display = 'flex';
+            });
+        });
+
+        // 关闭模态框
+        cancelBtn.addEventListener('click', () => {
+            addWebsiteModal.style.display = 'none';
+        });
+        
+        cancelEditBtn.addEventListener('click', () => {
+            editWebsiteModal.style.display = 'none';
+        });
+
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === addWebsiteModal) {
+                addWebsiteModal.style.display = 'none';
+            }
+            if (e.target === editWebsiteModal) {
+                editWebsiteModal.style.display = 'none';
+            }
+        });
+
+        // 自动检测网站图标
+        function detectWebsiteIcon(url, previewElement) {
+            if (url) {
+                // 提取域名
+                let domain = url.replace(/^(https?:\/\/)?(www\.)?/, '');
+                domain = domain.split('/')[0];
+                
+                // 根据域名设置图标
+                let icon = '<i class="fas fa-globe"></i>';
+                
+                if (domain.includes('google')) icon = '<i class="fab fa-google"></i>';
+                else if (domain.includes('github')) icon = '<i class="fab fa-github"></i>';
+                else if (domain.includes('youtube')) icon = '<i class="fab fa-youtube"></i>';
+                else if (domain.includes('twitter')) icon = '<i class="fab fa-twitter"></i>';
+                else if (domain.includes('facebook')) icon = '<i class="fab fa-facebook"></i>';
+                else if (domain.includes('instagram')) icon = '<i class="fab fa-instagram"></i>';
+                else if (domain.includes('linkedin')) icon = '<i class="fab fa-linkedin"></i>';
+                else if (domain.includes('reddit')) icon = '<i class="fab fa-reddit"></i>';
+                else if (domain.includes('pinterest')) icon = '<i class="fab fa-pinterest"></i>';
+                else if (domain.includes('spotify')) icon = '<i class="fab fa-spotify"></i>';
+                else if (domain.includes('netflix')) icon = '<i class="fas fa-film"></i>';
+                else if (domain.includes('amazon')) icon = '<i class="fab fa-amazon"></i>';
+                else if (domain.includes('microsoft')) icon = '<i class="fab fa-microsoft"></i>';
+                else if (domain.includes('apple')) icon = '<i class="fab fa-apple"></i>';
+                else if (domain.includes('stackoverflow')) icon = '<i class="fab fa-stack-overflow"></i>';
+                else if (domain.includes('medium')) icon = '<i class="fab fa-medium"></i>';
+                else if (domain.includes('gitlab')) icon = '<i class="fab fa-gitlab"></i>';
+                else if (domain.includes('bitbucket')) icon = '<i class="fab fa-bitbucket"></i>';
+                else if (domain.includes('dropbox')) icon = '<i class="fab fa-dropbox"></i>';
+                else if (domain.includes('trello')) icon = '<i class="fab fa-trello"></i>';
+                else if (domain.includes('slack')) icon = '<i class="fab fa-slack"></i>';
+                else if (domain.includes('discord')) icon = '<i class="fab fa-discord"></i>';
+                else if (domain.includes('twitch')) icon = '<i class="fab fa-twitch"></i>';
+                else if (domain.includes('dribbble')) icon = '<i class="fab fa-dribbble"></i>';
+                else if (domain.includes('behance')) icon = '<i class="fab fa-behance"></i>';
+                else if (domain.includes('weixin') || domain.includes('qq.com')) icon = '<i class="fab fa-weixin"></i>';
+                else if (domain.includes('zhihu')) icon = '<i class="fas fa-quora"></i>';
+                else if (domain.includes('bilibili')) icon = '<i class="fas fa-play-circle"></i>';
+                else if (domain.includes('coursera')) icon = '<i class="fas fa-graduation-cap"></i>';
+                else if (domain.includes('mozilla')) icon = '<i class="fab fa-firefox"></i>';
+                
+                previewElement.innerHTML = icon;
+            }
+        }
+
+        document.getElementById('websiteUrl').addEventListener('input', (e) => {
+            detectWebsiteIcon(e.target.value, logoPreview);
+        });
+        
+        document.getElementById('editWebsiteUrl').addEventListener('input', (e) => {
+            detectWebsiteIcon(e.target.value, editLogoPreview);
+        });
+
+        // 处理添加表单提交
+        addWebsiteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('websiteName').value;
+            const url = document.getElementById('websiteUrl').value;
+            const category = document.getElementById('websiteCategory').value;
+            const icon = logoPreview.innerHTML;
+            
+            // 创建新网站对象
+            const newWebsite = {
+                id: nextId++,
+                name: name,
+                url: url.startsWith('http') ? url : 'https://' + url,
+                category: category,
+                icon: icon
+            };
+            
+            // 添加到网站列表
+            websites.push(newWebsite);
+            
+            // 保存到本地存储
+            saveWebsites(websites);
+            
+            // 重新渲染
+            renderWebsites();
+            
+            // 关闭模态框并重置表单
+            addWebsiteModal.style.display = 'none';
+            addWebsiteForm.reset();
+            logoPreview.innerHTML = '<i class="fas fa-globe"></i>';
+        });
+
+        // 编辑网站
+        function editWebsite(id) {
+            const website = websites.find(w => w.id === id);
+            if (website) {
+                document.getElementById('editWebsiteId').value = website.id;
+                document.getElementById('editWebsiteName').value = website.name;
+                document.getElementById('editWebsiteUrl').value = website.url;
+                document.getElementById('editWebsiteCategory').value = website.category;
+                editLogoPreview.innerHTML = website.icon;
+                
+                editWebsiteModal.style.display = 'flex';
+            }
+        }
+
+        // 处理编辑表单提交
+        editWebsiteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editWebsiteId').value);
+            const name = document.getElementById('editWebsiteName').value;
+            const url = document.getElementById('editWebsiteUrl').value;
+            const category = document.getElementById('editWebsiteCategory').value;
+            const icon = editLogoPreview.innerHTML;
+            
+            // 更新网站对象
+            const websiteIndex = websites.findIndex(w => w.id === id);
+            if (websiteIndex !== -1) {
+                websites[websiteIndex] = {
+                    id: id,
+                    name: name,
+                    url: url.startsWith('http') ? url : 'https://' + url,
+                    category: category,
+                    icon: icon
+                };
+                
+                // 保存到本地存储
+                saveWebsites(websites);
+                
+                // 重新渲染
+                renderWebsites();
+                
+                // 关闭模态框
+                editWebsiteModal.style.display = 'none';
+            }
+        });
+
+        // 删除网站
+        function deleteWebsite(id) {
+            if (confirm('确定要删除这个网站吗？')) {
+                websites = websites.filter(website => website.id !== id);
+                saveWebsites(websites);
+                renderWebsites();
+            }
+        }
+
+        // 初始化拖拽功能
+        function initDragAndDrop() {
+            const cards = document.querySelectorAll('.website-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('dragenter', handleDragEnter);
+                card.addEventListener('dragleave', handleDragLeave);
+                card.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            if (!isEditMode) {
+                e.preventDefault();
+                return;
+            }
+            
+            dragSrcElement = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            
+            this.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            if (!isEditMode) return;
+            
+            const cards = document.querySelectorAll('.website-card');
+            cards.forEach(card => {
+                card.classList.remove('dragging');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (!isEditMode) return;
+            
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (!isEditMode) return;
+            
+            this.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            if (!isEditMode) return;
+            
+            this.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            if (!isEditMode) return;
+            
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (dragSrcElement !== this) {
+                // 获取两个元素的ID
+                const dragId = parseInt(dragSrcElement.getAttribute('data-id'));
+                const dropId = parseInt(this.getAttribute('data-id'));
+                
+                // 在数组中交换位置
+                const dragIndex = websites.findIndex(w => w.id === dragId);
+                const dropIndex = websites.findIndex(w => w.id === dropId);
+                
+                if (dragIndex !== -1 && dropIndex !== -1) {
+                    [websites[dragIndex], websites[dropIndex]] = [websites[dropIndex], websites[dragIndex]];
+                    saveWebsites(websites);
+                    renderWebsites();
+                }
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
