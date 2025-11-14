@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的个人导航</title>
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --work-color: #2c5aa0;
-            --social-color: #e74c3c;
-            --entertainment-color: #9b59b6;
-            --learning-color: #27ae60;
-            --background-color: #f5f7fa;
+            --work-color: #0f59c1;
+            --social-color: #bc2c1c;
+            --entertainment-color: #791da1;
+            --learning-color: #149449;
+            --background-color: #eef2f7;
             --card-color: #ffffff;
-            --text-color: #333333;
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --text-color: #222222;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
         
         * {
@@ -240,6 +242,12 @@
         
         .website-card.dragging {
             opacity: 0.5;
+            transform: scale(0.95);
+        }
+        
+        .website-card.dragover {
+            border: 2px dashed #2c5aa0;
+            background-color: rgba(44, 90, 160, 0.05);
         }
         
         .website-icon {
@@ -300,6 +308,7 @@
             display: none;
             align-items: center;
             justify-content: center;
+            z-index: 10;
         }
         
         .delete-btn {
@@ -402,6 +411,11 @@
             color: #333;
         }
         
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
         .btn:hover {
             opacity: 0.9;
         }
@@ -416,6 +430,19 @@
             align-items: center;
             justify-content: center;
             font-size: 14px;
+        }
+        
+        .favicon-img {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .password-hint {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
         }
         
         @media (max-width: 768px) {
@@ -603,23 +630,41 @@
         </div>
     </div>
 
+    <!-- 删除确认模态框 -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <h3>确认删除</h3>
+            <p style="margin-bottom: 15px; font-size: 12px;">请输入删除密码以确认删除操作：</p>
+            <form id="deleteConfirmForm">
+                <div class="form-group">
+                    <label for="deletePassword">删除密码</label>
+                    <input type="password" id="deletePassword" required>
+                    <div class="password-hint" id="passwordHint"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
+                    <button type="submit" class="btn btn-danger">确认删除</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // 从本地存储加载网站数据或使用默认数据
         function loadWebsites() {
-            const savedWebsites = localStorage.getItem('myNavigationWebsites');
-            if (savedWebsites) {
-                return JSON.parse(savedWebsites);
-            } else {
+           const savedWebsites = localStorage.getItem('myNavigationWebsites');
+           if (savedWebsites) {
+               return JSON.parse(savedWebsites);
+           } else {
                 return [
-                    {
-                        id: 1,
-                        name: "Google",
-                        url: "https://www.google.com",
-                        category: "work",
-                        icon: "<i class='fab fa-google'></i>"
-                    },
-                    {
-                        id: 2,
+                   {
+                      id: 1,
+                      name: "Google",
+                      url: "https://www.google.com",
+                       category: "work",
+                       icon: "<i class='fab fa-google'></i>"
+                   },
+                   {
+                       id: 2,
                         name: "GitHub",
                         url: "https://github.com",
                         category: "work",
@@ -629,8 +674,8 @@
                         id: 3,
                         name: "微信",
                         url: "https://wx.qq.com",
-                        category: "social",
-                        icon: "<i class='fab fa-weixin'></i>"
+                       category: "social",
+                       icon: "<i class='fab fa-weixin'></i>"
                     },
                     {
                         id: 4,
@@ -676,9 +721,22 @@
             localStorage.setItem('myNavigationWebsites', JSON.stringify(websites));
         }
 
+        // 生成动态删除密码
+        function generateDeletePassword() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `del${year}${month}${day}`;
+        }
+
         // 初始化网站数据
         let websites = loadWebsites();
         let nextId = websites.length > 0 ? Math.max(...websites.map(w => w.id)) + 1 : 1;
+        let websiteToDelete = null;
+        let isEditMode = false;
+        let currentCategory = 'work';
+        let dragSrcElement = null;
 
         // 获取DOM元素
         const searchInput = document.getElementById('searchInput');
@@ -689,17 +747,107 @@
         const addWebsiteForm = document.getElementById('addWebsiteForm');
         const editWebsiteModal = document.getElementById('editWebsiteModal');
         const editWebsiteForm = document.getElementById('editWebsiteForm');
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        const deleteConfirmForm = document.getElementById('deleteConfirmForm');
         const cancelBtn = document.getElementById('cancelBtn');
         const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
         const logoPreview = document.getElementById('logoPreview');
         const editLogoPreview = document.getElementById('editLogoPreview');
         const editModeButtons = document.querySelectorAll('.edit-mode-toggle');
         const addWebsiteButtons = document.querySelectorAll('.add-website-btn');
+        const passwordHint = document.getElementById('passwordHint');
 
-        // 当前状态
-        let isEditMode = false;
-        let currentCategory = 'work';
-        let dragSrcElement = null;
+        // 更新密码提示
+        function updatePasswordHint() {
+            const password = generateDeletePassword();
+            passwordHint.textContent = `密码提示：del日期 `;
+        }
+
+        // 初始化密码提示
+        updatePasswordHint();
+
+        // 获取网站真实图标
+        async function getWebsiteFavicon(url, previewElement) {
+            try {
+                // 确保URL格式正确
+                const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+                const domain = new URL(fullUrl).hostname;
+            
+                // 使用Google的favicon服务
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+            
+                // 测试图片是否可访问
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = function() {
+                        previewElement.innerHTML = `<img src="${faviconUrl}" class="favicon-img" alt="favicon">`;
+                        resolve(`<img src="${faviconUrl}" class="favicon-img" alt="favicon">`);
+                    };
+                    img.onerror = function() {
+                        // 如果获取失败，使用默认图标
+                        const fallbackIcon = detectFallbackIcon(domain);
+                        previewElement.innerHTML = fallbackIcon;
+                        resolve(fallbackIcon);
+                    };
+                    img.src = faviconUrl;
+                });
+            
+            } catch (error) {
+                // 如果出错，使用默认图标
+                const fallbackIcon = '<i class="fas fa-globe"></i>';
+                previewElement.innerHTML = fallbackIcon;
+                return fallbackIcon;
+            }
+        }
+
+        // 备用图标检测（当无法获取真实图标时使用）
+        function detectFallbackIcon(domain) {
+            let icon = '<i class="fas fa-globe"></i>';
+        
+            if (domain.includes('google')) icon = '<i class="fab fa-google"></i>';
+            else if (domain.includes('github')) icon = '<i class="fab fa-github"></i>';
+            else if (domain.includes('youtube')) icon = '<i class="fab fa-youtube"></i>';
+            else if (domain.includes('twitter')) icon = '<i class="fab fa-twitter"></i>';
+            else if (domain.includes('facebook')) icon = '<i class="fab fa-facebook"></i>';
+            else if (domain.includes('instagram')) icon = '<i class="fab fa-instagram"></i>';
+            else if (domain.includes('linkedin')) icon = '<i class="fab fa-linkedin"></i>';
+            else if (domain.includes('reddit')) icon = '<i class="fab fa-reddit"></i>';
+            else if (domain.includes('pinterest')) icon = '<i class="fab fa-pinterest"></i>';
+            else if (domain.includes('spotify')) icon = '<i class="fab fa-spotify"></i>';
+            else if (domain.includes('netflix')) icon = '<i class="fas fa-film"></i>';
+            else if (domain.includes('amazon')) icon = '<i class="fab fa-amazon"></i>';
+            else if (domain.includes('microsoft')) icon = '<i class="fab fa-microsoft"></i>';
+            else if (domain.includes('apple')) icon = '<i class="fab fa-apple"></i>';
+            else if (domain.includes('stackoverflow')) icon = '<i class="fab fa-stack-overflow"></i>';
+            else if (domain.includes('medium')) icon = '<i class="fab fa-medium"></i>';
+            else if (domain.includes('gitlab')) icon = '<i class="fab fa-gitlab"></i>';
+            else if (domain.includes('bitbucket')) icon = '<i class="fab fa-bitbucket"></i>';
+            else if (domain.includes('dropbox')) icon = '<i class="fab fa-dropbox"></i>';
+            else if (domain.includes('trello')) icon = '<i class="fab fa-trello"></i>';
+            else if (domain.includes('slack')) icon = '<i class="fab fa-slack"></i>';
+            else if (domain.includes('discord')) icon = '<i class="fab fa-discord"></i>';
+            else if (domain.includes('twitch')) icon = '<i class="fab fa-twitch"></i>';
+            else if (domain.includes('dribbble')) icon = '<i class="fab fa-dribbble"></i>';
+            else if (domain.includes('behance')) icon = '<i class="fab fa-behance"></i>';
+            else if (domain.includes('weixin') || domain.includes('qq.com')) icon = '<i class="fab fa-weixin"></i>';
+            else if (domain.includes('zhihu')) icon = '<i class="fas fa-quora"></i>';
+            else if (domain.includes('bilibili')) icon = '<i class="fas fa-play-circle"></i>';
+            else if (domain.includes('coursera')) icon = '<i class="fas fa-graduation-cap"></i>';
+            else if (domain.includes('mozilla')) icon = '<i class="fab fa-firefox"></i>';
+            
+            return icon;
+        }
+
+        // 自动检测网站图标
+        function detectWebsiteIcon(url, previewElement) {
+            if (url && url.trim() !== '') {
+                // 首先尝试获取真实网站图标
+                getWebsiteFavicon(url, previewElement);
+            } else {
+                previewElement.innerHTML = '<i class="fas fa-globe"></i>';
+            }
+        }
 
         // 渲染网站
         function renderWebsites() {
@@ -715,7 +863,7 @@
                     const card = document.createElement('div');
                     card.className = 'website-card';
                     card.setAttribute('data-id', website.id);
-                    card.setAttribute('draggable', 'true');
+                    card.setAttribute('draggable', isEditMode ? 'true' : 'false');
                     
                     card.innerHTML = `
                         <button class="delete-btn" data-id="${website.id}">
@@ -729,18 +877,26 @@
                             <div class="website-name">${website.name}</div>
                         </a>
                     `;
-                    
+                
                     grid.appendChild(card);
                 }
             });
             
+            // 重新初始化事件监听器
+            initEventListeners();
+            // 初始化拖拽功能
+            initDragAndDrop();
+        }
+
+        // 初始化事件监听器
+        function initEventListeners() {
             // 为删除按钮添加事件监听器
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     const id = parseInt(btn.getAttribute('data-id'));
-                    deleteWebsite(id);
+                    confirmDeleteWebsite(id);
                 });
             });
             
@@ -753,9 +909,6 @@
                     editWebsite(id);
                 });
             });
-            
-            // 初始化拖拽功能
-            initDragAndDrop();
         }
 
         // 初始渲染
@@ -796,21 +949,32 @@
             });
         });
 
-        // 编辑模式切换
+        // 编辑模式切换 - 修复版本
         editModeButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const category = btn.getAttribute('data-category');
                 const content = document.getElementById(`${category}-content`);
                 
-                isEditMode = !content.classList.contains('edit-mode');
+                // 切换编辑模式状态
+                isEditMode = !isEditMode;
                 
-                // 切换当前板块的编辑模式
                 if (isEditMode) {
+                    // 进入编辑模式
                     content.classList.add('edit-mode');
                     btn.innerHTML = '<i class="fas fa-check"></i> 完成';
+                    // 启用所有卡片的拖拽
+                    document.querySelectorAll('.website-card').forEach(card => {
+                        card.setAttribute('draggable', 'true');
+                    });
                 } else {
+                    // 退出编辑模式
                     content.classList.remove('edit-mode');
                     btn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
+                    // 禁用所有卡片的拖拽
+                    document.querySelectorAll('.website-card').forEach(card => {
+                        card.setAttribute('draggable', 'false');
+                        card.classList.remove('dragging', 'dragover');
+                    });
                 }
             });
         });
@@ -833,6 +997,12 @@
             editWebsiteModal.style.display = 'none';
         });
 
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteConfirmModal.style.display = 'none';
+            websiteToDelete = null;
+            deleteConfirmForm.reset();
+        });
+
         // 点击模态框外部关闭
         window.addEventListener('click', (e) => {
             if (e.target === addWebsiteModal) {
@@ -841,53 +1011,14 @@
             if (e.target === editWebsiteModal) {
                 editWebsiteModal.style.display = 'none';
             }
+            if (e.target === deleteConfirmModal) {
+                deleteConfirmModal.style.display = 'none';
+                websiteToDelete = null;
+                deleteConfirmForm.reset();
+            }
         });
 
-        // 自动检测网站图标
-        function detectWebsiteIcon(url, previewElement) {
-            if (url) {
-                // 提取域名
-                let domain = url.replace(/^(https?:\/\/)?(www\.)?/, '');
-                domain = domain.split('/')[0];
-                
-                // 根据域名设置图标
-                let icon = '<i class="fas fa-globe"></i>';
-                
-                if (domain.includes('google')) icon = '<i class="fab fa-google"></i>';
-                else if (domain.includes('github')) icon = '<i class="fab fa-github"></i>';
-                else if (domain.includes('youtube')) icon = '<i class="fab fa-youtube"></i>';
-                else if (domain.includes('twitter')) icon = '<i class="fab fa-twitter"></i>';
-                else if (domain.includes('facebook')) icon = '<i class="fab fa-facebook"></i>';
-                else if (domain.includes('instagram')) icon = '<i class="fab fa-instagram"></i>';
-                else if (domain.includes('linkedin')) icon = '<i class="fab fa-linkedin"></i>';
-                else if (domain.includes('reddit')) icon = '<i class="fab fa-reddit"></i>';
-                else if (domain.includes('pinterest')) icon = '<i class="fab fa-pinterest"></i>';
-                else if (domain.includes('spotify')) icon = '<i class="fab fa-spotify"></i>';
-                else if (domain.includes('netflix')) icon = '<i class="fas fa-film"></i>';
-                else if (domain.includes('amazon')) icon = '<i class="fab fa-amazon"></i>';
-                else if (domain.includes('microsoft')) icon = '<i class="fab fa-microsoft"></i>';
-                else if (domain.includes('apple')) icon = '<i class="fab fa-apple"></i>';
-                else if (domain.includes('stackoverflow')) icon = '<i class="fab fa-stack-overflow"></i>';
-                else if (domain.includes('medium')) icon = '<i class="fab fa-medium"></i>';
-                else if (domain.includes('gitlab')) icon = '<i class="fab fa-gitlab"></i>';
-                else if (domain.includes('bitbucket')) icon = '<i class="fab fa-bitbucket"></i>';
-                else if (domain.includes('dropbox')) icon = '<i class="fab fa-dropbox"></i>';
-                else if (domain.includes('trello')) icon = '<i class="fab fa-trello"></i>';
-                else if (domain.includes('slack')) icon = '<i class="fab fa-slack"></i>';
-                else if (domain.includes('discord')) icon = '<i class="fab fa-discord"></i>';
-                else if (domain.includes('twitch')) icon = '<i class="fab fa-twitch"></i>';
-                else if (domain.includes('dribbble')) icon = '<i class="fab fa-dribbble"></i>';
-                else if (domain.includes('behance')) icon = '<i class="fab fa-behance"></i>';
-                else if (domain.includes('weixin') || domain.includes('qq.com')) icon = '<i class="fab fa-weixin"></i>';
-                else if (domain.includes('zhihu')) icon = '<i class="fas fa-quora"></i>';
-                else if (domain.includes('bilibili')) icon = '<i class="fas fa-play-circle"></i>';
-                else if (domain.includes('coursera')) icon = '<i class="fas fa-graduation-cap"></i>';
-                else if (domain.includes('mozilla')) icon = '<i class="fab fa-firefox"></i>';
-                
-                previewElement.innerHTML = icon;
-            }
-        }
-
+        // 监听URL输入变化
         document.getElementById('websiteUrl').addEventListener('input', (e) => {
             detectWebsiteIcon(e.target.value, logoPreview);
         });
@@ -897,13 +1028,15 @@
         });
 
         // 处理添加表单提交
-        addWebsiteForm.addEventListener('submit', (e) => {
+        addWebsiteForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const name = document.getElementById('websiteName').value;
             const url = document.getElementById('websiteUrl').value;
             const category = document.getElementById('websiteCategory').value;
-            const icon = logoPreview.innerHTML;
+            
+            // 获取网站图标
+            const icon = await getWebsiteFavicon(url, logoPreview);
             
             // 创建新网站对象
             const newWebsite = {
@@ -944,14 +1077,16 @@
         }
 
         // 处理编辑表单提交
-        editWebsiteForm.addEventListener('submit', (e) => {
+        editWebsiteForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const id = parseInt(document.getElementById('editWebsiteId').value);
             const name = document.getElementById('editWebsiteName').value;
             const url = document.getElementById('editWebsiteUrl').value;
             const category = document.getElementById('editWebsiteCategory').value;
-            const icon = editLogoPreview.innerHTML;
+            
+            // 获取更新后的网站图标
+            const icon = await getWebsiteFavicon(url, editLogoPreview);
             
             // 更新网站对象
             const websiteIndex = websites.findIndex(w => w.id === id);
@@ -975,20 +1110,55 @@
             }
         });
 
-        // 删除网站
-        function deleteWebsite(id) {
-            if (confirm('确定要删除这个网站吗？')) {
-                websites = websites.filter(website => website.id !== id);
-                saveWebsites(websites);
-                renderWebsites();
-            }
+        // 确认删除网站
+        function confirmDeleteWebsite(id) {
+            websiteToDelete = id;
+            updatePasswordHint();
+            deleteConfirmModal.style.display = 'flex';
         }
 
-        // 初始化拖拽功能
+        // 处理删除确认表单提交 - 修复版本
+        deleteConfirmForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('deletePassword').value;
+            const correctPassword = generateDeletePassword();
+            
+            if (password === correctPassword) {
+                // 执行删除操作
+                if (websiteToDelete) {
+                    websites = websites.filter(website => website.id !== websiteToDelete);
+                    saveWebsites(websites);
+                    renderWebsites();
+                    
+                    // 显示成功消息
+                    alert('网站删除成功！');
+                }
+                deleteConfirmModal.style.display = 'none';
+                deleteConfirmForm.reset();
+                websiteToDelete = null;
+            } else {
+                alert('密码错误！请检查今日的删除密码。');
+                // 清空密码输入框
+                document.getElementById('deletePassword').value = '';
+                document.getElementById('deletePassword').focus();
+            }
+        });
+
+        // 初始化拖拽功能 - 修复版本
         function initDragAndDrop() {
             const cards = document.querySelectorAll('.website-card');
             
             cards.forEach(card => {
+                // 移除旧的事件监听器
+                card.removeEventListener('dragstart', handleDragStart);
+                card.removeEventListener('dragend', handleDragEnd);
+                card.removeEventListener('dragover', handleDragOver);
+                card.removeEventListener('dragenter', handleDragEnter);
+                card.removeEventListener('dragleave', handleDragLeave);
+                card.removeEventListener('drop', handleDrop);
+                
+                // 添加新的事件监听器
                 card.addEventListener('dragstart', handleDragStart);
                 card.addEventListener('dragend', handleDragEnd);
                 card.addEventListener('dragover', handleDragOver);
@@ -1001,31 +1171,37 @@
         function handleDragStart(e) {
             if (!isEditMode) {
                 e.preventDefault();
-                return;
+                return false;
             }
             
             dragSrcElement = this;
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
             
             this.classList.add('dragging');
+            
+            // 设置拖拽图像
+            setTimeout(() => {
+                this.style.opacity = '0.4';
+            }, 0);
         }
 
         function handleDragEnd(e) {
             if (!isEditMode) return;
             
-            const cards = document.querySelectorAll('.website-card');
-            cards.forEach(card => {
-                card.classList.remove('dragging');
+            this.style.opacity = '1';
+            this.classList.remove('dragging');
+            
+            // 移除所有拖拽相关样式
+            document.querySelectorAll('.website-card').forEach(card => {
+                card.classList.remove('dragover');
             });
         }
 
         function handleDragOver(e) {
             if (!isEditMode) return;
             
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
+            e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
             return false;
         }
@@ -1039,18 +1215,19 @@
         function handleDragLeave(e) {
             if (!isEditMode) return;
             
-            this.classList.remove('dragover');
+            // 只有当鼠标离开到元素外部时才移除样式
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('dragover');
+            }
         }
 
         function handleDrop(e) {
             if (!isEditMode) return;
             
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
+            e.preventDefault();
+            e.stopPropagation();
             
             if (dragSrcElement !== this) {
-                // 获取两个元素的ID
                 const dragId = parseInt(dragSrcElement.getAttribute('data-id'));
                 const dropId = parseInt(this.getAttribute('data-id'));
                 
@@ -1059,12 +1236,18 @@
                 const dropIndex = websites.findIndex(w => w.id === dropId);
                 
                 if (dragIndex !== -1 && dropIndex !== -1) {
+                    // 交换数组元素
                     [websites[dragIndex], websites[dropIndex]] = [websites[dropIndex], websites[dragIndex]];
+                    
+                    // 保存到本地存储
                     saveWebsites(websites);
+                    
+                    // 重新渲染
                     renderWebsites();
                 }
             }
             
+            this.classList.remove('dragover');
             return false;
         }
     </script>
