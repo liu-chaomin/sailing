@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="public, max-age=3600">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
     <title>我的个人导航</title>
     <link rel="icon" href="logo.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="logo.ico">
@@ -33,16 +39,83 @@
             padding: 15px;
             min-height: 100vh;
             font-size: 13px;
+            position: relative;
         }
         
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 装饰图片样式 */
+        .decoration-left, .decoration-right {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            opacity: 0.1;
+            pointer-events: none;
+            width: 150px;
+            height: auto;
+        }
+        
+        .decoration-left {
+            left: 5%;
+        }
+        
+        .decoration-right {
+            right: 5%;
+        }
+        
+        /* 右上角控制面板 - 修正定位和样式 */
+        .control-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            font-size: 11px;
+            background: none;
+            padding: 0;
+        }
+        
+        .sync-status {
+            font-size: 11px;
+            color: #666;
+            padding: 0;
+            background: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            border-radius: 0;
+        }
+        
+        .reset-data-btn {
+            background: none;
+            color: #666;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 11px;
+            box-shadow: none;
+            transition: color 0.3s;
+        }
+        
+        .reset-data-btn:hover {
+            background: none;
+            color: #333;
+            transform: none;
         }
         
         header {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
+            padding-top: 25px;
         }
         
         h1 {
@@ -52,12 +125,14 @@
         }
         
         .search-container {
-            max-width: 500px;
+            max-width: 560px; /* 20个汉字宽度 */
             margin: 0 auto 20px;
+            width: 100%;
         }
         
         .search-box {
             position: relative;
+            width: 100%;
         }
         
         .search-box input {
@@ -67,6 +142,8 @@
             border-radius: 20px;
             font-size: 13px;
             box-shadow: var(--shadow);
+            max-width: 560px;
+            min-width: 280px;
         }
         
         .search-box button {
@@ -337,7 +414,7 @@
             display: flex;
         }
         
-        /* 模态框样式 */
+        /* 模态框样式 - 重构布局 */
         .modal {
             display: none;
             position: fixed;
@@ -346,39 +423,44 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
         }
         
         .modal-content {
             background-color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             width: 90%;
-            max-width: 320px;
+            max-width: 450px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
         .modal h3 {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 16px;
             text-align: center;
         }
         
-        .form-group {
+        .form-row {
+            display: flex;
+            align-items: center;
             margin-bottom: 12px;
+            gap: 10px;
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
+        .form-row label {
+            width: 80px;
             font-weight: bold;
             font-size: 12px;
+            flex-shrink: 0;
         }
         
-        .form-group input, .form-group select {
-            width: 100%;
+        .form-row input, .form-row select {
+            flex: 1;
             padding: 6px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -389,7 +471,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 8px;
-            margin-top: 10px;
+            margin: 15px 0 10px 0;
         }
         
         .btn {
@@ -416,26 +498,53 @@
             color: white;
         }
         
+        .btn-small {
+            padding: 3px 8px;
+            font-size: 11px;
+        }
+        
         .btn:hover {
             opacity: 0.9;
         }
         
-        .website-logo-preview {
-            width: 35px;
-            height: 35px;
-            margin: 8px auto;
-            background-color: #f0f4ff;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+        .custom-icon-section {
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
         }
         
-        .favicon-img {
-            width: 20px;
-            height: 20px;
+        .custom-icon-input {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        
+        .custom-icon-input input {
+            flex: 1;
+        }
+        
+        .custom-icons-list {
+            max-height: 80px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            padding: 5px;
+            background: #f9f9f9;
+        }
+        
+        .custom-icon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 5px;
+            margin-bottom: 2px;
+            background: white;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        
+        .custom-icon-item:last-child {
+            margin-bottom: 0;
         }
         
         .password-hint {
@@ -446,6 +555,25 @@
         }
         
         @media (max-width: 768px) {
+            .decoration-left, .decoration-right {
+                display: none;
+            }
+            
+            .control-panel {
+                position: relative;
+                top: auto;
+                right: auto;
+                align-items: center;
+                margin-bottom: 10px;
+                flex-direction: row;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            header {
+                padding-top: 0;
+            }
+            
             .websites-grid {
                 grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
                 gap: 10px;
@@ -465,18 +593,65 @@
                 padding: 6px 15px;
                 font-size: 13px;
             }
+            
+            .search-container {
+                max-width: 400px;
+            }
+            
+            .search-box input {
+                max-width: 400px;
+                min-width: 200px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+            
+            .form-row label {
+                width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .control-panel {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .search-container {
+                max-width: 300px;
+            }
+            
+            .search-box input {
+                max-width: 300px;
+                min-width: 150px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 装饰图片 -->
+    <img src="sailing/left.png" alt="左侧装饰" class="decoration-left">
+    <img src="sailing/right.png" alt="右侧装饰" class="decoration-right">
+    
     <div class="container">
         <header>
+            <!-- 右上角控制面板 -->
+            <div class="control-panel">
+                <div class="sync-status" id="syncStatus">已同步</div>
+                <button class="reset-data-btn" id="resetDataBtn" title="初始化数据">
+                    <i class="fas fa-redo"></i> 初始化
+                </button>
+            </div>
+            
             <h1>我的个人导航</h1>
             
             <div class="search-container">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="输入关键词进行全网搜索...">
-                    <button id="searchButton">
+                    <button id="searchButton" title="搜索">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -495,10 +670,10 @@
             <div class="category-header">
                 <h2 class="category-title">工作</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="work">
+                    <button class="action-btn edit-mode-toggle" data-category="work" title="进入编辑模式">
                         <i class="fas fa-edit"></i> 编辑
                     </button>
-                    <button class="action-btn add-website-btn" data-category="work">
+                    <button class="action-btn add-website-btn" data-category="work" title="添加新网站">
                         <i class="fas fa-plus"></i> 添加
                     </button>
                 </div>
@@ -513,10 +688,10 @@
             <div class="category-header">
                 <h2 class="category-title">社交</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="social">
+                    <button class="action-btn edit-mode-toggle" data-category="social" title="进入编辑模式">
                         <i class="fas fa-edit"></i> 编辑
                     </button>
-                    <button class="action-btn add-website-btn" data-category="social">
+                    <button class="action-btn add-website-btn" data-category="social" title="添加新网站">
                         <i class="fas fa-plus"></i> 添加
                     </button>
                 </div>
@@ -531,10 +706,10 @@
             <div class="category-header">
                 <h2 class="category-title">娱乐</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="entertainment">
+                    <button class="action-btn edit-mode-toggle" data-category="entertainment" title="进入编辑模式">
                         <i class="fas fa-edit"></i> 编辑
                     </button>
-                    <button class="action-btn add-website-btn" data-category="entertainment">
+                    <button class="action-btn add-website-btn" data-category="entertainment" title="添加新网站">
                         <i class="fas fa-plus"></i> 添加
                     </button>
                 </div>
@@ -549,10 +724,10 @@
             <div class="category-header">
                 <h2 class="category-title">学习</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="learning">
+                    <button class="action-btn edit-mode-toggle" data-category="learning" title="进入编辑模式">
                         <i class="fas fa-edit"></i> 编辑
                     </button>
-                    <button class="action-btn add-website-btn" data-category="learning">
+                    <button class="action-btn add-website-btn" data-category="learning" title="添加新网站">
                         <i class="fas fa-plus"></i> 添加
                     </button>
                 </div>
@@ -568,15 +743,15 @@
         <div class="modal-content">
             <h3>添加新网站</h3>
             <form id="addWebsiteForm">
-                <div class="form-group">
+                <div class="form-row">
                     <label for="websiteName">网站名称</label>
                     <input type="text" id="websiteName" required>
                 </div>
-                <div class="form-group">
+                <div class="form-row">
                     <label for="websiteUrl">网站URL</label>
                     <input type="url" id="websiteUrl" required>
                 </div>
-                <div class="form-group">
+                <div class="form-row">
                     <label for="websiteCategory">分类</label>
                     <select id="websiteCategory" required>
                         <option value="work">工作</option>
@@ -585,12 +760,45 @@
                         <option value="learning">学习</option>
                     </select>
                 </div>
-                <div class="website-logo-preview" id="logoPreview">
-                    <i class="fas fa-globe"></i>
+                <div class="form-row">
+                    <label for="websiteIcon">网站图标</label>
+                    <select id="websiteIcon" required>
+                        <option value="fas fa-flag">党徽</option>
+                        <option value="fas fa-landmark">政府网站</option>
+                        <option value="fab fa-microsoft">微软</option>
+                        <option value="fas fa-bolt">国家电网</option>
+                        <option value="fas fa-industry">国家电投</option>
+                        <option value="fas fa-server">服务器</option>
+                        <option value="fas fa-play-circle">视频</option>
+                        <option value="fas fa-search">搜索</option>
+                        <option value="fas fa-globe">默认图标</option>
+                        <option value="fab fa-google">Google</option>
+                        <option value="fab fa-github">GitHub</option>
+                        <option value="fab fa-youtube">YouTube</option>
+                        <option value="fab fa-weixin">微信</option>
+                        <option value="fab fa-zhihu">知乎</option>
+                        <option value="fas fa-graduation-cap">学习</option>
+                        <option value="fab fa-firefox">浏览器</option>
+                        <option value="fas fa-shopping-cart">购物</option>
+                        <option value="fas fa-music">音乐</option>
+                        <option value="fas fa-gamepad">游戏</option>
+                    </select>
                 </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
-                    <button type="submit" class="btn btn-primary">添加</button>
+                
+                <!-- 自定义图标区域 -->
+                <div class="custom-icon-section">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                        <button type="submit" class="btn btn-primary">添加</button>
+                    </div>
+                    
+                    <div class="custom-icon-input">
+                        <input type="text" id="customIconInput" placeholder="输入Font Awesome类名" style="font-size: 11px;">
+                        <button type="button" class="btn btn-primary btn-small" id="addCustomIconBtn">添加图标</button>
+                    </div>
+                    <div class="custom-icons-list" id="customIconsList">
+                        <!-- 自定义图标列表将在这里动态生成 -->
+                    </div>
                 </div>
             </form>
         </div>
@@ -602,15 +810,15 @@
             <h3>编辑网站</h3>
             <form id="editWebsiteForm">
                 <input type="hidden" id="editWebsiteId">
-                <div class="form-group">
+                <div class="form-row">
                     <label for="editWebsiteName">网站名称</label>
                     <input type="text" id="editWebsiteName" required>
                 </div>
-                <div class="form-group">
+                <div class="form-row">
                     <label for="editWebsiteUrl">网站URL</label>
                     <input type="url" id="editWebsiteUrl" required>
                 </div>
-                <div class="form-group">
+                <div class="form-row">
                     <label for="editWebsiteCategory">分类</label>
                     <select id="editWebsiteCategory" required>
                         <option value="work">工作</option>
@@ -619,12 +827,41 @@
                         <option value="learning">学习</option>
                     </select>
                 </div>
-                <div class="website-logo-preview" id="editLogoPreview">
-                    <i class="fas fa-globe"></i>
+                <div class="form-row">
+                    <label for="editWebsiteIcon">网站图标</label>
+                    <select id="editWebsiteIcon" required>
+                        <option value="fas fa-flag">党徽</option>
+                        <option value="fas fa-landmark">政府网站</option>
+                        <option value="fab fa-microsoft">微软</option>
+                        <option value="fas fa-bolt">国家电网</option>
+                        <option value="fas fa-industry">国家电投</option>
+                        <option value="fas fa-server">服务器</option>
+                        <option value="fas fa-play-circle">视频</option>
+                        <option value="fas fa-search">搜索</option>
+                        <option value="fas fa-globe">默认图标</option>
+                        <option value="fab fa-google">Google</option>
+                        <option value="fab fa-github">GitHub</option>
+                        <option value="fab fa-youtube">YouTube</option>
+                        <option value="fab fa-weixin">微信</option>
+                        <option value="fab fa-zhihu">知乎</option>
+                        <option value="fas fa-graduation-cap">学习</option>
+                        <option value="fab fa-firefox">浏览器</option>
+                        <option value="fas fa-shopping-cart">购物</option>
+                        <option value="fas fa-music">音乐</option>
+                        <option value="fas fa-gamepad">游戏</option>
+                    </select>
                 </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
+                
+                <!-- 自定义图标区域 -->
+                <div class="custom-icon-section">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                    
+                    <div class="custom-icons-list" id="editCustomIconsList">
+                        <!-- 自定义图标列表将在这里动态生成 -->
+                    </div>
                 </div>
             </form>
         </div>
@@ -649,79 +886,109 @@
         </div>
     </div>
 
+    <!-- 初始化确认模态框 -->
+    <div class="modal" id="initConfirmModal">
+        <div class="modal-content">
+            <h3>确认初始化</h3>
+            <p style="margin-bottom: 15px; font-size: 12px;">请输入初始化密码以确认重置所有数据：</p>
+            <form id="initConfirmForm">
+                <div class="form-group">
+                    <label for="initPassword">初始化密码</label>
+                    <input type="password" id="initPassword" required>
+                    <div class="password-hint" id="initPasswordHint"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelInitBtn">取消</button>
+                    <button type="submit" class="btn btn-danger">确认初始化</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        function loadWebsites() {
-           const savedWebsites = localStorage.getItem('myNavigationWebsites');
-           if (savedWebsites) {
-               return JSON.parse(savedWebsites);
-           } else {
-                return [
-                   {
-                      id: 1,
-                      name: "Google",
-                      url: "https://www.google.com",
-                       category: "work",
-                       icon: "<i class='fab fa-google'></i>"
-                   },
-                   {
-                       id: 2,
-                        name: "GitHub",
-                        url: "https://github.com",
-                        category: "work",
-                        icon: "<i class='fab fa-github'></i>"
-                    },
-                    {
-                        id: 3,
-                        name: "微信",
-                        url: "https://wx.qq.com",
-                       category: "social",
-                       icon: "<i class='fab fa-weixin'></i>"
-                    },
-                    {
-                        id: 4,
-                        name: "知乎",
-                        url: "https://www.zhihu.com",
-                        category: "social",
-                        icon: "<i class='fas fa-quora'></i>"
-                    },
-                    {
-                        id: 5,
-                        name: "YouTube",
-                        url: "https://www.youtube.com",
-                        category: "entertainment",
-                        icon: "<i class='fab fa-youtube'></i>"
-                    },
-                    {
-                        id: 6,
-                        name: "Bilibili",
-                        url: "https://www.bilibili.com",
-                        category: "entertainment",
-                        icon: "<i class='fas fa-play-circle'></i>"
-                    },
-                    {
-                        id: 7,
-                        name: "Coursera",
-                        url: "https://www.coursera.org",
-                        category: "learning",
-                        icon: "<i class='fas fa-graduation-cap'></i>"
-                    },
-                    {
-                        id: 8,
-                        name: "MDN Web",
-                        url: "https://developer.mozilla.org",
-                        category: "learning",
-                        icon: "<i class='fab fa-firefox'></i>"
-                    }
-                ];
+        // JSONBin 配置
+        const JSONBIN_CONFIG = {
+            binId: 'YOUR_BIN_ID_HERE',
+            apiKey: 'YOUR_API_KEY_HERE',
+            baseUrl: 'https://api.jsonbin.io/v3/b'
+        };
+
+        // 全局变量
+        let websites = [];
+        let customIcons = [];
+        let nextId = 1;
+        let websiteToDelete = null;
+        let isEditMode = false;
+        let currentCategory = 'work';
+        let dragSrcElement = null;
+
+        // 默认网站数据
+        const defaultWebsites = [
+            {
+                id: 1,
+                name: "Google",
+                url: "https://www.google.com",
+                category: "work",
+                icon: "fab fa-google"
+            },
+            {
+                id: 2,
+                name: "GitHub",
+                url: "https://github.com",
+                category: "work",
+                icon: "fab fa-github"
+            },
+            {
+                id: 3,
+                name: "微信",
+                url: "https://wx.qq.com",
+                category: "social",
+                icon: "fab fa-weixin"
+            },
+            {
+                id: 4,
+                name: "知乎",
+                url: "https://www.zhihu.com",
+                category: "social",
+                icon: "fab fa-zhihu"
+            },
+            {
+                id: 5,
+                name: "YouTube",
+                url: "https://www.youtube.com",
+                category: "entertainment",
+                icon: "fab fa-youtube"
+            },
+            {
+                id: 6,
+                name: "Bilibili",
+                url: "https://www.bilibili.com",
+                category: "entertainment",
+                icon: "fas fa-play-circle"
+            },
+            {
+                id: 7,
+                name: "Coursera",
+                url: "https://www.coursera.org",
+                category: "learning",
+                icon: "fas fa-graduation-cap"
+            },
+            {
+                id: 8,
+                name: "MDN Web",
+                url: "https://developer.mozilla.org",
+                category: "learning",
+                icon: "fab fa-firefox"
             }
-        }
+        ];
 
-        // 保存网站数据到本地存储
-        function saveWebsites(websites) {
-            localStorage.setItem('myNavigationWebsites', JSON.stringify(websites));
-        }
+        // DOM 加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM 加载完成，开始初始化应用...');
+            initApp();
+        });
 
-        // 生成动态删除密码
+        // 生成删除密码
         function generateDeletePassword() {
             const now = new Date();
             const year = now.getFullYear();
@@ -730,427 +997,803 @@
             return `del${year}${month}${day}`;
         }
 
-        // 初始化网站数据
-        let websites = loadWebsites();
-        let nextId = websites.length > 0 ? Math.max(...websites.map(w => w.id)) + 1 : 1;
-        let websiteToDelete = null;
-        let isEditMode = false;
-        let currentCategory = 'work';
-        let dragSrcElement = null;
+        // 重置数据功能
+        function initData() {
+            const initConfirmModal = document.getElementById('initConfirmModal');
+            if (initConfirmModal) {
+                updateInitPasswordHint();
+                initConfirmModal.style.display = 'flex';
+            }
+        }
 
-        // 获取DOM元素
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-        const categoryTabs = document.querySelectorAll('.category-tab');
-        const categoryContents = document.querySelectorAll('.category-content');
-        const addWebsiteModal = document.getElementById('addWebsiteModal');
-        const addWebsiteForm = document.getElementById('addWebsiteForm');
-        const editWebsiteModal = document.getElementById('editWebsiteModal');
-        const editWebsiteForm = document.getElementById('editWebsiteForm');
-        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-        const deleteConfirmForm = document.getElementById('deleteConfirmForm');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const logoPreview = document.getElementById('logoPreview');
-        const editLogoPreview = document.getElementById('editLogoPreview');
-        const editModeButtons = document.querySelectorAll('.edit-mode-toggle');
-        const addWebsiteButtons = document.querySelectorAll('.add-website-btn');
-        const passwordHint = document.getElementById('passwordHint');
+        // 执行初始化数据
+        function performInitData() {
+            localStorage.removeItem('myNavigationWebsites');
+            localStorage.removeItem('myNavigationCustomIcons');
+            websites = [...defaultWebsites];
+            customIcons = [];
+            nextId = Math.max(...websites.map(w => w.id)) + 1;
+            saveWebsites(websites);
+            saveCustomIcons();
+            renderWebsites();
+            updateCustomIconsList();
+            
+            // 居中显示提示信息
+            showCenteredAlert('数据初始化成功！');
+            
+            const initConfirmModal = document.getElementById('initConfirmModal');
+            if (initConfirmModal) {
+                initConfirmModal.style.display = 'none';
+            }
+            const initConfirmForm = document.getElementById('initConfirmForm');
+            if (initConfirmForm) {
+                initConfirmForm.reset();
+            }
+        }
 
+        // 居中显示提示信息
+        function showCenteredAlert(message) {
+            // 创建自定义提示框
+            const alertBox = document.createElement('div');
+            alertBox.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                z-index: 3000;
+                font-size: 14px;
+                max-width: 300px;
+                text-align: center;
+            `;
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+            
+            // 2秒后自动移除
+            setTimeout(() => {
+                document.body.removeChild(alertBox);
+            }, 2000);
+        }
+
+        // 更新初始化密码提示
+        function updateInitPasswordHint() {
+            const password = generateDeletePassword();
+            const passwordHint = document.getElementById('initPasswordHint');
+            if (passwordHint) {
+                passwordHint.textContent = `当前密码: ${password}`;
+            }
+        }
+
+        // 保存自定义图标
+        function saveCustomIcons() {
+            try {
+                localStorage.setItem('myNavigationCustomIcons', JSON.stringify(customIcons));
+                return true;
+            } catch (error) {
+                console.log('保存自定义图标失败:', error);
+                return false;
+            }
+        }
+
+        // 加载自定义图标
+        function loadCustomIcons() {
+            try {
+                const savedIcons = localStorage.getItem('myNavigationCustomIcons');
+                if (savedIcons) {
+                    return JSON.parse(savedIcons);
+                }
+                return [];
+            } catch (error) {
+                console.log('加载自定义图标失败:', error);
+                return [];
+            }
+        }
+
+        // 添加自定义图标
+        function addCustomIcon(iconClass) {
+            if (iconClass && !customIcons.includes(iconClass)) {
+                customIcons.push(iconClass);
+                saveCustomIcons();
+                updateCustomIconsList();
+                return true;
+            }
+            return false;
+        }
+
+        // 删除自定义图标
+        function removeCustomIcon(iconClass) {
+            const index = customIcons.indexOf(iconClass);
+            if (index > -1) {
+                customIcons.splice(index, 1);
+                saveCustomIcons();
+                updateCustomIconsList();
+                return true;
+            }
+            return false;
+        }
+
+        // 更新自定义图标列表显示
+        function updateCustomIconsList() {
+            const addList = document.getElementById('customIconsList');
+            const editList = document.getElementById('editCustomIconsList');
+            
+            if (addList) {
+                addList.innerHTML = '';
+                customIcons.forEach(iconClass => {
+                    const iconItem = document.createElement('div');
+                    iconItem.className = 'custom-icon-item';
+                    iconItem.innerHTML = `
+                        <span><i class="${iconClass}"></i> ${iconClass}</span>
+                        <button type="button" class="btn btn-danger btn-small" data-icon="${iconClass}">删除</button>
+                    `;
+                    addList.appendChild(iconItem);
+                });
+            }
+            
+            if (editList) {
+                editList.innerHTML = '';
+                customIcons.forEach(iconClass => {
+                    const iconItem = document.createElement('div');
+                    iconItem.className = 'custom-icon-item';
+                    iconItem.innerHTML = `
+                        <span><i class="${iconClass}"></i> ${iconClass}</span>
+                        <button type="button" class="btn btn-danger btn-small" data-icon="${iconClass}">删除</button>
+                    `;
+                    editList.appendChild(iconItem);
+                });
+            }
+            
+            // 为删除按钮添加事件监听
+            document.querySelectorAll('.custom-icons-list .btn-danger').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const iconClass = this.getAttribute('data-icon');
+                    if (confirm(`确定要删除自定义图标 "${iconClass}" 吗？`)) {
+                        removeCustomIcon(iconClass);
+                    }
+                });
+            });
+        }
+
+        // 更新同步状态显示
+        function updateSyncStatus(message, type = '') {
+            const syncStatus = document.getElementById('syncStatus');
+            if (syncStatus) {
+                syncStatus.textContent = message;
+                syncStatus.className = 'sync-status';
+                if (type) {
+                    syncStatus.classList.add(type);
+                }
+            }
+        }
+
+        // 云同步功能
+        async function syncToCloud() {
+            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+                return false;
+            }
+
+            try {
+                updateSyncStatus('正在同步', 'syncing');
+                
+                const response = await fetch(`${JSONBIN_CONFIG.baseUrl}/${JSONBIN_CONFIG.binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_CONFIG.apiKey,
+                        'X-Bin-Name': '个人导航数据'
+                    },
+                    body: JSON.stringify({
+                        websites: websites,
+                        customIcons: customIcons,
+                        lastUpdated: new Date().toISOString(),
+                        version: '1.0'
+                    })
+                });
+
+                if (response.ok) {
+                    updateSyncStatus('同步完成', 'success');
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateSyncStatus('同步失败', 'error');
+                return false;
+            }
+        }
+
+        async function syncFromCloud() {
+            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+                return false;
+            }
+
+            try {
+                updateSyncStatus('正在同步', 'syncing');
+                
+                const response = await fetch(`${JSONBIN_CONFIG.baseUrl}/${JSONBIN_CONFIG.binId}/latest`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_CONFIG.apiKey
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.record && data.record.websites) {
+                        websites = data.record.websites;
+                        customIcons = data.record.customIcons || [];
+                        if (websites.length > 0) {
+                            nextId = Math.max(...websites.map(w => w.id)) + 1;
+                        }
+                        updateSyncStatus('已同步', 'success');
+                        return true;
+                    }
+                }
+                throw new Error('无效的云端数据');
+            } catch (error) {
+                updateSyncStatus('同步失败', 'error');
+                return false;
+            }
+        }
+     
+        // 加载网站数据
+        async function loadWebsites() {
+            try {
+                const savedWebsites = localStorage.getItem('myNavigationWebsites');
+                if (savedWebsites) {
+                    const parsed = JSON.parse(savedWebsites);
+                    console.log('从本地存储加载的数据:', parsed);
+                    
+                    // 检查数据格式是否兼容
+                    if (parsed.length > 0 && parsed[0].icon && parsed[0].icon.includes('<')) {
+                        // 旧格式数据，需要重置
+                        console.log('检测到旧格式数据，使用默认数据');
+                        return defaultWebsites;
+                    }
+                    
+                    return parsed;
+                }
+                
+                const cloudSuccess = await syncFromCloud();
+                if (cloudSuccess) {
+                    await saveWebsites(websites);
+                    return websites;
+                }
+                
+                console.log('使用默认数据');
+                return defaultWebsites;
+                
+            } catch (error) {
+                console.log('加载网站数据失败，使用默认数据:', error);
+                return defaultWebsites;
+            }
+        }
+     
+        // 保存网站数据
+        async function saveWebsites(websitesToSave) {
+            try {
+                localStorage.setItem('myNavigationWebsites', JSON.stringify(websitesToSave));
+                console.log('数据已保存到本地存储:', websitesToSave);
+                
+                setTimeout(() => {
+                    syncToCloud();
+                }, 1000);
+                
+                return true;
+            } catch (error) {
+                console.log('保存网站数据失败:', error);
+                return false;
+            }
+        }
+     
         // 更新密码提示
         function updatePasswordHint() {
             const password = generateDeletePassword();
-            passwordHint.textContent = `密码提示：del日期 `;
-        }
-
-        // 初始化密码提示
-        updatePasswordHint();
-
-        // 获取网站真实图标
-        async function getWebsiteFavicon(url, previewElement) {
-            try {
-                // 确保URL格式正确
-                const fullUrl = url.startsWith('http') ? url : 'https://' + url;
-                const domain = new URL(fullUrl).hostname;
-            
-                // 使用Google的favicon服务
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-            
-                // 测试图片是否可访问
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = function() {
-                        previewElement.innerHTML = `<img src="${faviconUrl}" class="favicon-img" alt="favicon">`;
-                        resolve(`<img src="${faviconUrl}" class="favicon-img" alt="favicon">`);
-                    };
-                    img.onerror = function() {
-                        // 如果获取失败，使用默认图标
-                        const fallbackIcon = detectFallbackIcon(domain);
-                        previewElement.innerHTML = fallbackIcon;
-                        resolve(fallbackIcon);
-                    };
-                    img.src = faviconUrl;
-                });
-            
-            } catch (error) {
-                // 如果出错，使用默认图标
-                const fallbackIcon = '<i class="fas fa-globe"></i>';
-                previewElement.innerHTML = fallbackIcon;
-                return fallbackIcon;
+            const passwordHint = document.getElementById('passwordHint');
+            if (passwordHint) {
+                passwordHint.textContent = `当前密码: ${password}`;
             }
         }
-
-        // 备用图标检测（当无法获取真实图标时使用）
-        function detectFallbackIcon(domain) {
-            let icon = '<i class="fas fa-globe"></i>';
-        
-            if (domain.includes('google')) icon = '<i class="fab fa-google"></i>';
-            else if (domain.includes('github')) icon = '<i class="fab fa-github"></i>';
-            else if (domain.includes('youtube')) icon = '<i class="fab fa-youtube"></i>';
-            else if (domain.includes('twitter')) icon = '<i class="fab fa-twitter"></i>';
-            else if (domain.includes('facebook')) icon = '<i class="fab fa-facebook"></i>';
-            else if (domain.includes('instagram')) icon = '<i class="fab fa-instagram"></i>';
-            else if (domain.includes('linkedin')) icon = '<i class="fab fa-linkedin"></i>';
-            else if (domain.includes('reddit')) icon = '<i class="fab fa-reddit"></i>';
-            else if (domain.includes('pinterest')) icon = '<i class="fab fa-pinterest"></i>';
-            else if (domain.includes('spotify')) icon = '<i class="fab fa-spotify"></i>';
-            else if (domain.includes('netflix')) icon = '<i class="fas fa-film"></i>';
-            else if (domain.includes('amazon')) icon = '<i class="fab fa-amazon"></i>';
-            else if (domain.includes('microsoft')) icon = '<i class="fab fa-microsoft"></i>';
-            else if (domain.includes('apple')) icon = '<i class="fab fa-apple"></i>';
-            else if (domain.includes('stackoverflow')) icon = '<i class="fab fa-stack-overflow"></i>';
-            else if (domain.includes('medium')) icon = '<i class="fab fa-medium"></i>';
-            else if (domain.includes('gitlab')) icon = '<i class="fab fa-gitlab"></i>';
-            else if (domain.includes('bitbucket')) icon = '<i class="fab fa-bitbucket"></i>';
-            else if (domain.includes('dropbox')) icon = '<i class="fab fa-dropbox"></i>';
-            else if (domain.includes('trello')) icon = '<i class="fab fa-trello"></i>';
-            else if (domain.includes('slack')) icon = '<i class="fab fa-slack"></i>';
-            else if (domain.includes('discord')) icon = '<i class="fab fa-discord"></i>';
-            else if (domain.includes('twitch')) icon = '<i class="fab fa-twitch"></i>';
-            else if (domain.includes('dribbble')) icon = '<i class="fab fa-dribbble"></i>';
-            else if (domain.includes('behance')) icon = '<i class="fab fa-behance"></i>';
-            else if (domain.includes('weixin') || domain.includes('qq.com')) icon = '<i class="fab fa-weixin"></i>';
-            else if (domain.includes('zhihu')) icon = '<i class="fas fa-quora"></i>';
-            else if (domain.includes('bilibili')) icon = '<i class="fas fa-play-circle"></i>';
-            else if (domain.includes('coursera')) icon = '<i class="fas fa-graduation-cap"></i>';
-            else if (domain.includes('mozilla')) icon = '<i class="fab fa-firefox"></i>';
-            
-            return icon;
-        }
-
-        // 自动检测网站图标
-        function detectWebsiteIcon(url, previewElement) {
-            if (url && url.trim() !== '') {
-                // 首先尝试获取真实网站图标
-                getWebsiteFavicon(url, previewElement);
-            } else {
-                previewElement.innerHTML = '<i class="fas fa-globe"></i>';
-            }
-        }
-
+     
         // 渲染网站
         function renderWebsites() {
+            console.log('开始渲染网站，数量:', websites.length);
+            console.log('网站数据:', websites);
+            
             // 清空所有网格
             document.querySelectorAll('.websites-grid').forEach(grid => {
                 grid.innerHTML = '';
             });
             
+            let renderedCount = 0;
+            
             // 按分类渲染网站
             websites.forEach(website => {
+                // 确保网站数据有效
+                if (!website || typeof website.id === 'undefined' || !website.category) {
+                    console.warn('无效的网站数据:', website);
+                    return;
+                }
+                
                 const grid = document.getElementById(`${website.category}-grid`);
                 if (grid) {
                     const card = document.createElement('div');
                     card.className = 'website-card';
-                    card.setAttribute('data-id', website.id);
+                    card.setAttribute('data-id', website.id.toString());
                     card.setAttribute('draggable', isEditMode ? 'true' : 'false');
                     
+                    // 确保图标不为空
+                    const iconClass = website.icon || 'fas fa-globe';
+                    
                     card.innerHTML = `
-                        <button class="delete-btn" data-id="${website.id}">
+                        <button class="delete-btn" data-id="${website.id}" title="删除网站">
                             <i class="fas fa-times"></i>
                         </button>
-                        <button class="edit-btn" data-id="${website.id}">
+                        <button class="edit-btn" data-id="${website.id}" title="编辑网站">
                             <i class="fas fa-pen"></i>
                         </button>
                         <a href="${website.url}" target="_blank" class="website-link">
-                            <div class="website-icon">${website.icon}</div>
+                            <div class="website-icon">
+                                <i class="${iconClass}"></i>
+                            </div>
                             <div class="website-name">${website.name}</div>
                         </a>
                     `;
                 
                     grid.appendChild(card);
+                    renderedCount++;
+                    console.log('已添加网站卡片:', website.name);
+                } else {
+                    console.warn('未找到对应的网格:', `${website.category}-grid`);
                 }
             });
             
-            // 重新初始化事件监听器
+            console.log(`网站渲染完成，成功渲染 ${renderedCount} 个网站`);
             initEventListeners();
-            // 初始化拖拽功能
             initDragAndDrop();
         }
-
+     
         // 初始化事件监听器
         function initEventListeners() {
-            // 为删除按钮添加事件监听器
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const id = parseInt(btn.getAttribute('data-id'));
-                    confirmDeleteWebsite(id);
-                });
-            });
+            console.log('初始化网站卡片事件监听器');
             
-            // 为编辑按钮添加事件监听器
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const id = parseInt(btn.getAttribute('data-id'));
-                    editWebsite(id);
-                });
+            // 使用事件委托来处理动态生成的元素
+            document.querySelectorAll('.websites-grid').forEach(grid => {
+                // 移除旧的事件监听器
+                grid.removeEventListener('click', handleGridClick);
+                // 添加新的事件监听器
+                grid.addEventListener('click', handleGridClick);
             });
         }
 
-        // 初始渲染
-        renderWebsites();
-
-        // 搜索功能
-        function performSearch() {
-            const searchTerm = searchInput.value.trim();
+        // 处理网格点击事件（事件委托）
+        function handleGridClick(e) {
+            const deleteBtn = e.target.closest('.delete-btn');
+            const editBtn = e.target.closest('.edit-btn');
             
-            if (!searchTerm) return;
-            
-            // 使用Bing进行全网搜索，在新标签页打开
-            window.open(`https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
-        }
-
-        searchButton.addEventListener('click', performSearch);
-        
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch();
+            if (deleteBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const id = parseInt(deleteBtn.getAttribute('data-id'));
+                confirmDeleteWebsite(id);
             }
-        });
+            
+            if (editBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const id = parseInt(editBtn.getAttribute('data-id'));
+                editWebsite(id);
+            }
+        }
+     
+        // 初始化应用
+        async function initApp() {
+            console.log('开始初始化应用...');
+            
+            websites = await loadWebsites();
+            customIcons = loadCustomIcons();
+            console.log('加载的网站数据:', websites);
+            console.log('加载的自定义图标:', customIcons);
+            
+            if (websites.length > 0) {
+                nextId = Math.max(...websites.map(w => w.id)) + 1;
+                console.log('下一个ID:', nextId);
+            }
+            
+            updatePasswordHint();
+            updateInitPasswordHint();
+            renderWebsites();
+            updateCustomIconsList();
+            initAllEventListeners();
+            
+            console.log('应用初始化完成，共加载', websites.length, '个网站');
+        }
+     
+        // 初始化所有事件监听器
+        function initAllEventListeners() {
+            console.log('初始化所有事件监听器...');
+            
+            // 初始化数据按钮
+            const resetDataBtn = document.getElementById('resetDataBtn');
+            if (resetDataBtn) {
+                resetDataBtn.addEventListener('click', initData);
+                console.log('初始化数据按钮事件监听器已绑定');
+            }
 
-        // 分类标签切换
-        categoryTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const category = tab.getAttribute('data-category');
-                
-                // 更新活动标签
-                categoryTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // 更新活动内容
-                categoryContents.forEach(content => content.classList.remove('active'));
-                document.getElementById(`${category}-content`).classList.add('active');
-                
-                currentCategory = category;
-            });
-        });
+            // 初始化确认表单
+            const initConfirmForm = document.getElementById('initConfirmForm');
+            if (initConfirmForm) {
+                initConfirmForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const password = document.getElementById('initPassword').value;
+                    const correctPassword = generateDeletePassword();
+                    
+                    if (password === correctPassword) {
+                        performInitData();
+                    } else {
+                        showCenteredAlert('密码错误！请重新输入密码。');
+                        const initPassword = document.getElementById('initPassword');
+                        if (initPassword) {
+                            initPassword.value = '';
+                            initPassword.focus();
+                        }
+                    }
+                });
+            }
 
-        // 编辑模式切换 - 修复版本
-        editModeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const category = btn.getAttribute('data-category');
-                const content = document.getElementById(`${category}-content`);
+            // 取消初始化按钮
+            const cancelInitBtn = document.getElementById('cancelInitBtn');
+            if (cancelInitBtn) {
+                cancelInitBtn.addEventListener('click', () => {
+                    const initConfirmModal = document.getElementById('initConfirmModal');
+                    if (initConfirmModal) {
+                        initConfirmModal.style.display = 'none';
+                    }
+                    const initConfirmForm = document.getElementById('initConfirmForm');
+                    if (initConfirmForm) {
+                        initConfirmForm.reset();
+                    }
+                });
+            }
+
+            // 添加自定义图标按钮
+            const addCustomIconBtn = document.getElementById('addCustomIconBtn');
+            const customIconInput = document.getElementById('customIconInput');
+            if (addCustomIconBtn && customIconInput) {
+                addCustomIconBtn.addEventListener('click', function() {
+                    const iconClass = customIconInput.value.trim();
+                    if (iconClass) {
+                        if (addCustomIcon(iconClass)) {
+                            customIconInput.value = '';
+                            showCenteredAlert('自定义图标添加成功！');
+                        } else {
+                            showCenteredAlert('图标已存在或格式不正确！');
+                        }
+                    } else {
+                        showCenteredAlert('请输入图标类名！');
+                    }
+                });
                 
-                // 切换编辑模式状态
-                isEditMode = !isEditMode;
+                // 按Enter键添加图标
+                customIconInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addCustomIconBtn.click();
+                    }
+                });
+            }
+
+            // 搜索功能
+            const searchButton = document.getElementById('searchButton');
+            const searchInput = document.getElementById('searchInput');
+            
+            if (searchButton && searchInput) {
+                searchButton.addEventListener('click', performSearch);
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+                console.log('搜索功能事件监听器已绑定');
+            }
+
+            // 分类标签切换
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const categoryContents = document.querySelectorAll('.category-content');
+            
+            if (categoryTabs.length > 0) {
+                categoryTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const category = tab.getAttribute('data-category');
+                        
+                        categoryTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        categoryContents.forEach(content => content.classList.remove('active'));
+                        const targetContent = document.getElementById(`${category}-content`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                        }
+                        
+                        currentCategory = category;
+                    });
+                });
+                console.log('分类标签事件监听器已绑定');
+            }
+
+            // 编辑模式切换
+            const editModeButtons = document.querySelectorAll('.edit-mode-toggle');
+            if (editModeButtons.length > 0) {
+                editModeButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.getAttribute('data-category');
+                        const content = document.getElementById(`${category}-content`);
+                        
+                        if (content) {
+                            isEditMode = !isEditMode;
+                            
+                            if (isEditMode) {
+                                content.classList.add('edit-mode');
+                                btn.innerHTML = '<i class="fas fa-check"></i> 完成';
+                                document.querySelectorAll('.website-card').forEach(card => {
+                                    card.setAttribute('draggable', 'true');
+                                });
+                            } else {
+                                content.classList.remove('edit-mode');
+                                btn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
+                                document.querySelectorAll('.website-card').forEach(card => {
+                                    card.setAttribute('draggable', 'false');
+                                    card.classList.remove('dragging', 'dragover');
+                                });
+                            }
+                        }
+                    });
+                });
+                console.log('编辑模式事件监听器已绑定');
+            }
+
+            // 添加网站功能
+            const addWebsiteButtons = document.querySelectorAll('.add-website-btn');
+            if (addWebsiteButtons.length > 0) {
+                addWebsiteButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.getAttribute('data-category');
+                        const websiteCategory = document.getElementById('websiteCategory');
+                        if (websiteCategory) {
+                            websiteCategory.value = category;
+                        }
+                        const addWebsiteModal = document.getElementById('addWebsiteModal');
+                        if (addWebsiteModal) {
+                            addWebsiteModal.style.display = 'flex';
+                        }
+                    });
+                });
+                console.log('添加网站事件监听器已绑定');
+            }
+
+            // 关闭模态框
+            const cancelBtn = document.getElementById('cancelBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    const addWebsiteModal = document.getElementById('addWebsiteModal');
+                    if (addWebsiteModal) {
+                        addWebsiteModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', () => {
+                    const editWebsiteModal = document.getElementById('editWebsiteModal');
+                    if (editWebsiteModal) {
+                        editWebsiteModal.style.display = 'none';
+                    }
+                });
+            }
+        
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.addEventListener('click', () => {
+                    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+                    if (deleteConfirmModal) {
+                        deleteConfirmModal.style.display = 'none';
+                        websiteToDelete = null;
+                        const deleteConfirmForm = document.getElementById('deleteConfirmForm');
+                        if (deleteConfirmForm) {
+                            deleteConfirmForm.reset();
+                        }
+                    }
+                });
+            }
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                const addWebsiteModal = document.getElementById('addWebsiteModal');
+                const editWebsiteModal = document.getElementById('editWebsiteModal');
+                const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+                const initConfirmModal = document.getElementById('initConfirmModal');
                 
-                if (isEditMode) {
-                    // 进入编辑模式
-                    content.classList.add('edit-mode');
-                    btn.innerHTML = '<i class="fas fa-check"></i> 完成';
-                    // 启用所有卡片的拖拽
-                    document.querySelectorAll('.website-card').forEach(card => {
-                        card.setAttribute('draggable', 'true');
-                    });
-                } else {
-                    // 退出编辑模式
-                    content.classList.remove('edit-mode');
-                    btn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
-                    // 禁用所有卡片的拖拽
-                    document.querySelectorAll('.website-card').forEach(card => {
-                        card.setAttribute('draggable', 'false');
-                        card.classList.remove('dragging', 'dragover');
-                    });
+                if (e.target === addWebsiteModal) {
+                    addWebsiteModal.style.display = 'none';
+                }
+                if (e.target === editWebsiteModal) {
+                    editWebsiteModal.style.display = 'none';
+                }
+                if (e.target === deleteConfirmModal) {
+                    deleteConfirmModal.style.display = 'none';
+                    websiteToDelete = null;
+                    const deleteConfirmForm = document.getElementById('deleteConfirmForm');
+                    if (deleteConfirmForm) {
+                        deleteConfirmForm.reset();
+                    }
+                }
+                if (e.target === initConfirmModal) {
+                    initConfirmModal.style.display = 'none';
+                    const initConfirmForm = document.getElementById('initConfirmForm');
+                    if (initConfirmForm) {
+                        initConfirmForm.reset();
+                    }
                 }
             });
-        });
 
-        // 添加网站功能
-        addWebsiteButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const category = btn.getAttribute('data-category');
-                document.getElementById('websiteCategory').value = category;
-                addWebsiteModal.style.display = 'flex';
-            });
-        });
-
-        // 关闭模态框
-        cancelBtn.addEventListener('click', () => {
-            addWebsiteModal.style.display = 'none';
-        });
-        
-        cancelEditBtn.addEventListener('click', () => {
-            editWebsiteModal.style.display = 'none';
-        });
-
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteConfirmModal.style.display = 'none';
-            websiteToDelete = null;
-            deleteConfirmForm.reset();
-        });
-
-        // 点击模态框外部关闭
-        window.addEventListener('click', (e) => {
-            if (e.target === addWebsiteModal) {
-                addWebsiteModal.style.display = 'none';
+            // 处理添加表单提交
+            const addWebsiteForm = document.getElementById('addWebsiteForm');
+            if (addWebsiteForm) {
+                addWebsiteForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('websiteName').value;
+                    const url = document.getElementById('websiteUrl').value;
+                    const category = document.getElementById('websiteCategory').value;
+                    const icon = document.getElementById('websiteIcon').value;
+                    
+                    const newWebsite = {
+                        id: nextId++,
+                        name: name,
+                        url: url.startsWith('http') ? url : 'https://' + url,
+                        category: category,
+                        icon: icon
+                    };
+                    
+                    websites.push(newWebsite);
+                    await saveWebsites(websites);
+                    renderWebsites();
+                    
+                    const addWebsiteModal = document.getElementById('addWebsiteModal');
+                    if (addWebsiteModal) {
+                        addWebsiteModal.style.display = 'none';
+                    }
+                    addWebsiteForm.reset();
+                    
+                    showCenteredAlert('网站添加成功！');
+                });
             }
-            if (e.target === editWebsiteModal) {
-                editWebsiteModal.style.display = 'none';
+
+            // 处理编辑表单提交
+            const editWebsiteForm = document.getElementById('editWebsiteForm');
+            if (editWebsiteForm) {
+                editWebsiteForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const id = parseInt(document.getElementById('editWebsiteId').value);
+                    const name = document.getElementById('editWebsiteName').value;
+                    const url = document.getElementById('editWebsiteUrl').value;
+                    const category = document.getElementById('editWebsiteCategory').value;
+                    const icon = document.getElementById('editWebsiteIcon').value;
+                    
+                    const websiteIndex = websites.findIndex(w => w.id === id);
+                    if (websiteIndex !== -1) {
+                        websites[websiteIndex] = {
+                            id: id,
+                            name: name,
+                            url: url.startsWith('http') ? url : 'https://' + url,
+                            category: category,
+                            icon: icon
+                        };
+                        
+                        await saveWebsites(websites);
+                        renderWebsites();
+                        
+                        const editWebsiteModal = document.getElementById('editWebsiteModal');
+                        if (editWebsiteModal) {
+                            editWebsiteModal.style.display = 'none';
+                        }
+                        
+                        showCenteredAlert('网站修改成功！');
+                    }
+                });
             }
-            if (e.target === deleteConfirmModal) {
-                deleteConfirmModal.style.display = 'none';
-                websiteToDelete = null;
-                deleteConfirmForm.reset();
+
+            // 处理删除确认表单提交
+            const deleteConfirmForm = document.getElementById('deleteConfirmForm');
+            if (deleteConfirmForm) {
+                deleteConfirmForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const password = document.getElementById('deletePassword').value;
+                    const correctPassword = generateDeletePassword();
+                    
+                    if (password === correctPassword) {
+                        if (websiteToDelete) {
+                            websites = websites.filter(website => website.id !== websiteToDelete);
+                            await saveWebsites(websites);
+                            renderWebsites();
+                            
+                            showCenteredAlert('网站删除成功！');
+                        }
+                        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+                        if (deleteConfirmModal) {
+                            deleteConfirmModal.style.display = 'none';
+                        }
+                        deleteConfirmForm.reset();
+                        websiteToDelete = null;
+                    } else {
+                        showCenteredAlert('密码错误！请重新输入密码。');
+                        const deletePassword = document.getElementById('deletePassword');
+                        if (deletePassword) {
+                            deletePassword.value = '';
+                            deletePassword.focus();
+                        }
+                    }
+                });
             }
-        });
 
-        // 监听URL输入变化
-        document.getElementById('websiteUrl').addEventListener('input', (e) => {
-            detectWebsiteIcon(e.target.value, logoPreview);
-        });
-        
-        document.getElementById('editWebsiteUrl').addEventListener('input', (e) => {
-            detectWebsiteIcon(e.target.value, editLogoPreview);
-        });
-
-        // 处理添加表单提交
-        addWebsiteForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            console.log('所有事件监听器初始化完成');
+        }
+     
+        // 搜索功能
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
             
-            const name = document.getElementById('websiteName').value;
-            const url = document.getElementById('websiteUrl').value;
-            const category = document.getElementById('websiteCategory').value;
+            const searchTerm = searchInput.value.trim();
+            if (!searchTerm) return;
             
-            // 获取网站图标
-            const icon = await getWebsiteFavicon(url, logoPreview);
-            
-            // 创建新网站对象
-            const newWebsite = {
-                id: nextId++,
-                name: name,
-                url: url.startsWith('http') ? url : 'https://' + url,
-                category: category,
-                icon: icon
-            };
-            
-            // 添加到网站列表
-            websites.push(newWebsite);
-            
-            // 保存到本地存储
-            saveWebsites(websites);
-            
-            // 重新渲染
-            renderWebsites();
-            
-            // 关闭模态框并重置表单
-            addWebsiteModal.style.display = 'none';
-            addWebsiteForm.reset();
-            logoPreview.innerHTML = '<i class="fas fa-globe"></i>';
-        });
-
+            window.open(`https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
+        }
+     
         // 编辑网站
         function editWebsite(id) {
             const website = websites.find(w => w.id === id);
             if (website) {
-                document.getElementById('editWebsiteId').value = website.id;
-                document.getElementById('editWebsiteName').value = website.name;
-                document.getElementById('editWebsiteUrl').value = website.url;
-                document.getElementById('editWebsiteCategory').value = website.category;
-                editLogoPreview.innerHTML = website.icon;
+                const editWebsiteId = document.getElementById('editWebsiteId');
+                const editWebsiteName = document.getElementById('editWebsiteName');
+                const editWebsiteUrl = document.getElementById('editWebsiteUrl');
+                const editWebsiteCategory = document.getElementById('editWebsiteCategory');
+                const editWebsiteIcon = document.getElementById('editWebsiteIcon');
                 
-                editWebsiteModal.style.display = 'flex';
+                if (editWebsiteId) editWebsiteId.value = website.id;
+                if (editWebsiteName) editWebsiteName.value = website.name;
+                if (editWebsiteUrl) editWebsiteUrl.value = website.url;
+                if (editWebsiteCategory) editWebsiteCategory.value = website.category;
+                if (editWebsiteIcon) editWebsiteIcon.value = website.icon || 'fas fa-globe';
+                
+                const editWebsiteModal = document.getElementById('editWebsiteModal');
+                if (editWebsiteModal) {
+                    editWebsiteModal.style.display = 'flex';
+                }
             }
         }
-
-        // 处理编辑表单提交
-        editWebsiteForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const id = parseInt(document.getElementById('editWebsiteId').value);
-            const name = document.getElementById('editWebsiteName').value;
-            const url = document.getElementById('editWebsiteUrl').value;
-            const category = document.getElementById('editWebsiteCategory').value;
-            
-            // 获取更新后的网站图标
-            const icon = await getWebsiteFavicon(url, editLogoPreview);
-            
-            // 更新网站对象
-            const websiteIndex = websites.findIndex(w => w.id === id);
-            if (websiteIndex !== -1) {
-                websites[websiteIndex] = {
-                    id: id,
-                    name: name,
-                    url: url.startsWith('http') ? url : 'https://' + url,
-                    category: category,
-                    icon: icon
-                };
-                
-                // 保存到本地存储
-                saveWebsites(websites);
-                
-                // 重新渲染
-                renderWebsites();
-                
-                // 关闭模态框
-                editWebsiteModal.style.display = 'none';
-            }
-        });
-
+     
         // 确认删除网站
         function confirmDeleteWebsite(id) {
-            websiteToDelete = id;
+            websiteToDelete = parseInt(id);
             updatePasswordHint();
-            deleteConfirmModal.style.display = 'flex';
-        }
-
-        // 处理删除确认表单提交 - 修复版本
-        deleteConfirmForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const password = document.getElementById('deletePassword').value;
-            const correctPassword = generateDeletePassword();
-            
-            if (password === correctPassword) {
-                // 执行删除操作
-                if (websiteToDelete) {
-                    websites = websites.filter(website => website.id !== websiteToDelete);
-                    saveWebsites(websites);
-                    renderWebsites();
-                    
-                    // 显示成功消息
-                    alert('网站删除成功！');
-                }
-                deleteConfirmModal.style.display = 'none';
-                deleteConfirmForm.reset();
-                websiteToDelete = null;
-            } else {
-                alert('密码错误！请检查今日的删除密码。');
-                // 清空密码输入框
-                document.getElementById('deletePassword').value = '';
-                document.getElementById('deletePassword').focus();
+            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+            if (deleteConfirmModal) {
+                deleteConfirmModal.style.display = 'flex';
             }
-        });
-
-        // 初始化拖拽功能 - 修复版本
+        }
+     
+        // 初始化拖拽功能
         function initDragAndDrop() {
             const cards = document.querySelectorAll('.website-card');
             
             cards.forEach(card => {
-                // 移除旧的事件监听器
                 card.removeEventListener('dragstart', handleDragStart);
                 card.removeEventListener('dragend', handleDragEnd);
                 card.removeEventListener('dragover', handleDragOver);
@@ -1158,7 +1801,6 @@
                 card.removeEventListener('dragleave', handleDragLeave);
                 card.removeEventListener('drop', handleDrop);
                 
-                // 添加新的事件监听器
                 card.addEventListener('dragstart', handleDragStart);
                 card.addEventListener('dragend', handleDragEnd);
                 card.addEventListener('dragover', handleDragOver);
@@ -1167,7 +1809,7 @@
                 card.addEventListener('drop', handleDrop);
             });
         }
-
+     
         function handleDragStart(e) {
             if (!isEditMode) {
                 e.preventDefault();
@@ -1180,24 +1822,22 @@
             
             this.classList.add('dragging');
             
-            // 设置拖拽图像
             setTimeout(() => {
                 this.style.opacity = '0.4';
             }, 0);
         }
-
+     
         function handleDragEnd(e) {
             if (!isEditMode) return;
             
             this.style.opacity = '1';
             this.classList.remove('dragging');
             
-            // 移除所有拖拽相关样式
             document.querySelectorAll('.website-card').forEach(card => {
                 card.classList.remove('dragover');
             });
         }
-
+     
         function handleDragOver(e) {
             if (!isEditMode) return;
             
@@ -1205,22 +1845,21 @@
             e.dataTransfer.dropEffect = 'move';
             return false;
         }
-
+     
         function handleDragEnter(e) {
             if (!isEditMode) return;
             
             this.classList.add('dragover');
         }
-
+     
         function handleDragLeave(e) {
             if (!isEditMode) return;
             
-            // 只有当鼠标离开到元素外部时才移除样式
             if (!this.contains(e.relatedTarget)) {
                 this.classList.remove('dragover');
             }
         }
-
+     
         function handleDrop(e) {
             if (!isEditMode) return;
             
@@ -1231,18 +1870,12 @@
                 const dragId = parseInt(dragSrcElement.getAttribute('data-id'));
                 const dropId = parseInt(this.getAttribute('data-id'));
                 
-                // 在数组中交换位置
                 const dragIndex = websites.findIndex(w => w.id === dragId);
                 const dropIndex = websites.findIndex(w => w.id === dropId);
                 
                 if (dragIndex !== -1 && dropIndex !== -1) {
-                    // 交换数组元素
                     [websites[dragIndex], websites[dropIndex]] = [websites[dropIndex], websites[dragIndex]];
-                    
-                    // 保存到本地存储
                     saveWebsites(websites);
-                    
-                    // 重新渲染
                     renderWebsites();
                 }
             }
