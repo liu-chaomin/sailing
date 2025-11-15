@@ -52,21 +52,25 @@
         /* 装饰图片样式 */
         .decoration-left, .decoration-right {
             position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 20px;
+            transform: none;
             z-index: 1;
-            opacity: 0.1;
+            opacity: 0.5;
             pointer-events: none;
-            width: 150px;
+            width: min(150px, 15vw);
             height: auto;
+
+            max-width: 20vw; 
+            min-width: 60px;
+            display: block !important;
         }
         
         .decoration-left {
-            left: 5%;
+            left:  max(2%, 5px);
         }
         
         .decoration-right {
-            right: 5%;
+            right:  max(2%, 5px);
         }
         
         /* 右上角控制面板 - 修正定位和样式 */
@@ -127,12 +131,15 @@
         .search-container {
             max-width: 560px; /* 20个汉字宽度 */
             margin: 0 auto 20px;
-            width: 100%;
+            width: 90%;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
         
         .search-box {
             position: relative;
             width: 100%;
+            max-width: 100%;
         }
         
         .search-box input {
@@ -142,8 +149,9 @@
             border-radius: 20px;
             font-size: 13px;
             box-shadow: var(--shadow);
-            max-width: 560px;
-            min-width: 280px;
+            max-width: 100%;
+            min-width: unset;
+            box-sizing: border-box;
         }
         
         .search-box button {
@@ -561,13 +569,16 @@
             
             .control-panel {
                 position: relative;
-                top: auto;
-                right: auto;
-                align-items: center;
-                margin-bottom: 10px;
-                flex-direction: row;
-                justify-content: center;
-                gap: 15px;
+                top: 10px;
+                right: 10px;
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-end;
+                font-size: 11px;
+                background: none;
+                padding: 0;
             }
             
             header {
@@ -633,8 +644,8 @@
 </head>
 <body>
     <!-- 装饰图片 -->
-    <img src="sailing/left.png" alt="左侧装饰" class="decoration-left">
-    <img src="sailing/right.png" alt="右侧装饰" class="decoration-right">
+    <img src="left.png" alt="左侧装饰" class="decoration-left">
+    <img src="right.png" alt="右侧装饰" class="decoration-right">
     
     <div class="container">
         <header>
@@ -908,8 +919,8 @@
     <script>
         // JSONBin 配置
         const JSONBIN_CONFIG = {
-            binId: 'YOUR_BIN_ID_HERE',
-            apiKey: 'YOUR_API_KEY_HERE',
+            binId: '6918aed143b1c97be9af61e5',
+            apiKey: '$2a$10$FLHYkDLXRAceGVMLjmGOo.HhWhMechh3.PhY8y9LlRcIqv/GYnLZi',
             baseUrl: 'https://api.jsonbin.io/v3/b'
         };
 
@@ -1171,8 +1182,10 @@
 
         // 云同步功能
         async function syncToCloud() {
-            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
+            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE' || 
+                !JSONBIN_CONFIG.apiKey || JSONBIN_CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
                 return false;
+                updateSyncStatus('未配置云同步');
             }
 
             try {
@@ -1392,23 +1405,27 @@
         async function initApp() {
             console.log('开始初始化应用...');
             
-            websites = await loadWebsites();
+            /////修改部分/////
+            const cloudSuccess = await syncFromCloud();
+            if (!cloudSuccess) {
+                 websites = await loadWebsites();
+            }
+            /////
+            ///websites = await loadWebsites();
             customIcons = loadCustomIcons();
-            console.log('加载的网站数据:', websites);
-            console.log('加载的自定义图标:', customIcons);
             
             if (websites.length > 0) {
                 nextId = Math.max(...websites.map(w => w.id)) + 1;
-                console.log('下一个ID:', nextId);
+            } else {
+                websites = defaultWebsites;
+                nextId = Math.max(...websites.map(w => w.id)) + 1;
             }
-            
+
             updatePasswordHint();
             updateInitPasswordHint();
             renderWebsites();
             updateCustomIconsList();
             initAllEventListeners();
-            
-            console.log('应用初始化完成，共加载', websites.length, '个网站');
         }
      
         // 初始化所有事件监听器
