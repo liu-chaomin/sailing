@@ -1184,8 +1184,8 @@
         async function syncToCloud() {
             if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE' || 
                 !JSONBIN_CONFIG.apiKey || JSONBIN_CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
-                return false;
                 updateSyncStatus('未配置云同步');
+                return false;
             }
 
             try {
@@ -1196,7 +1196,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Master-Key': JSONBIN_CONFIG.apiKey,
-                        'X-Bin-Name': '个人导航数据'
+                        'X-Bin-Name': 'Personal Navigation Data'
                     },
                     body: JSON.stringify({
                         websites: websites,
