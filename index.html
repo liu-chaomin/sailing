@@ -13,8 +13,20 @@
     <title>我的个人导航</title>
     <link rel="icon" href="logo.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="logo.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 精简版Font Awesome - 只包含5个必要图标 -->
     <style>
+        /* 精简版Font Awesome图标 */
+        .fa-laptop:before {content: "🖥️"}
+        .fa-comment:before {content: "🛠️"}
+        .fa-film:before {content: "🍜"}
+        .fa-seedling:before {content: "🌱"}
+        .fa-search:before {content: "🔍"}
+    </style>
+    
+    <!-- 关键CSS内联 -->
+    <style>
+        /* 精简的关键CSS */
         :root {
             --work-color: #0f59c1;
             --social-color: #bc2c1c;
@@ -30,7 +42,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
         }
         
         body {
@@ -40,87 +52,17 @@
             padding: 15px;
             min-height: 100vh;
             font-size: 13px;
-            position: relative;
         }
         
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* 装饰图片样式 */
-        .decoration-left, .decoration-right {
-            position: fixed;
-            top: 50px;
-            transform: none;
-            z-index: 1;
-            opacity: 0.8;
-            pointer-events: none;
-            width: min(150px, 15vw);
-            height: auto;
-
-            max-width: 20vw; 
-            min-width: 60px;
-            display: block !important;
-        }
-        
-        .decoration-left {
-            left:  max(2%, 5px);
-        }
-        
-        .decoration-right {
-            right:  max(2%, 5px);
-        }
-        
-        /* 右上角控制面板 - 修正定位和样式 */
-        .control-panel {
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            align-items: flex-end;
-            font-size: 11px;
-            background: none;
-            padding: 0;
-        }
-        
-        .sync-status {
-            font-size: 11px;
-            color: #666;
-            padding: 0;
-            background: none;
-            box-shadow: none;
-            backdrop-filter: none;
-            border-radius: 0;
-        }
-        
-        .reset-data-btn {
-            background: none;
-            color: #666;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            font-size: 11px;
-            box-shadow: none;
-            transition: color 0.3s;
-        }
-        
-        .reset-data-btn:hover {
-            background: none;
-            color: #333;
-            transform: none;
         }
         
         header {
             text-align: center;
             margin-bottom: 20px;
             position: relative;
-            padding-top: 25px;
         }
         
         h1 {
@@ -130,17 +72,14 @@
         }
         
         .search-container {
-            max-width: 560px; /* 20个汉字宽度 */
+            max-width: 560px;
             margin: 0 auto 20px;
             width: 90%;
-            padding: 0 10px;
-            box-sizing: border-box;
         }
         
         .search-box {
             position: relative;
             width: 100%;
-            max-width: 100%;
         }
         
         .search-box input {
@@ -150,9 +89,6 @@
             border-radius: 20px;
             font-size: 13px;
             box-shadow: var(--shadow);
-            max-width: 100%;
-            min-width: unset;
-            box-sizing: border-box;
         }
         
         .search-box button {
@@ -160,8 +96,8 @@
             right: 5px;
             top: 50%;
             transform: translateY(-50%);
-            background: #2c5aa0;
-            color: white;
+            background: none;
+            color: #2c5aa0;
             border: none;
             border-radius: 50%;
             width: 30px;
@@ -170,7 +106,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
         }
         
         .categories-tabs {
@@ -185,11 +120,13 @@
             cursor: pointer;
             font-size: 14px;
             border-bottom: 2px solid transparent;
-            transition: all 0.3s;
+            color: #666;
         }
         
         .category-tab.active {
             font-weight: bold;
+            border-bottom-color: #2c5aa0;
+            color: #2c5aa0;
         }
         
         .category-content {
@@ -198,32 +135,115 @@
             padding: 15px;
             box-shadow: var(--shadow);
             min-height: 300px;
+            background: white;
         }
         
         .category-content.active {
             display: block;
         }
         
-        #work-content {
-            background-color: rgba(44, 90, 160, 0.05);
-            border: 1px solid rgba(44, 90, 160, 0.2);
+        .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
         }
         
-        #social-content {
-            background-color: rgba(231, 76, 60, 0.05);
-            border: 1px solid rgba(231, 76, 60, 0.2);
+        .website-card {
+            background: white;
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
         
-        #entertainment-content {
-            background-color: rgba(155, 89, 182, 0.05);
-            border: 1px solid rgba(155, 89, 182, 0.2);
+        .website-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        #learning-content {
-            background-color: rgba(39, 174, 96, 0.05);
-            border: 1px solid rgba(39, 174, 96, 0.2);
+        .website-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
         }
         
+        .website-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 5px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            font-size: 18px;
+        }
+        
+        #work-content .website-icon {
+            color: var(--work-color);
+        }
+        
+        #social-content .website-icon {
+            color: var(--social-color);
+        }
+        
+        #entertainment-content .website-icon {
+            color: var(--entertainment-color);
+        }
+        
+        #learning-content .website-icon {
+            color: var(--learning-color);
+        }
+        
+        .website-name {
+            font-weight: bold;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        /* 控制面板基础样式 */
+        .control-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            font-size: 11px;
+        }
+        
+        .sync-status {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .reset-data-btn {
+            background: none;
+            color: #666;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        
+        .reset-data-btn:hover {
+            color: #333;
+        }
+        
+        /* 分类头部样式 */
         .category-header {
             display: flex;
             justify-content: space-between;
@@ -304,126 +324,38 @@
             background-color: rgba(0, 0, 0, 0.05);
         }
         
-        .websites-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-        }
-        
-        .website-card {
-            background-color: var(--card-color);
-            border-radius: 8px;
-            padding: 10px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            box-shadow: var(--shadow);
-        }
-        
-        .website-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        .website-card.dragging {
-            opacity: 0.5;
-            transform: scale(0.95);
-        }
-        
-        .website-card.dragover {
-            border: 2px dashed #2c5aa0;
-            background-color: rgba(44, 90, 160, 0.05);
-        }
-        
-        .website-icon {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 5px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        
-        #work-content .website-icon {
-            background-color: rgba(44, 90, 160, 0.1);
-            color: var(--work-color);
-        }
-        
-        #social-content .website-icon {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: var(--social-color);
-        }
-        
-        #entertainment-content .website-icon {
-            background-color: rgba(155, 89, 182, 0.1);
-            color: var(--entertainment-color);
-        }
-        
-        #learning-content .website-icon {
-            background-color: rgba(39, 174, 96, 0.1);
-            color: var(--learning-color);
-        }
-        
-        .website-name {
-            font-weight: bold;
-            font-size: 11px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .website-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
+        /* 编辑按钮样式 */
+        .edit-controls {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            display: none;
+            gap: 2px;
         }
         
         .delete-btn, .edit-btn {
-            position: absolute;
-            background: #e74c3c;
-            color: white;
+            background: none;
             border: none;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
+            border-radius: 3px;
+            width: 20px;
+            height: 20px;
             font-size: 10px;
             cursor: pointer;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            padding: 0;
         }
         
         .delete-btn {
-            top: -5px;
-            right: -5px;
-            background: #e74c3c;
+            color: #e74c3c;
         }
         
         .edit-btn {
-            top: -5px;
-            left: -5px;
-            background: #3498db;
+            color: #3498db;
         }
         
-        .website-card:hover .delete-btn,
-        .website-card:hover .edit-btn {
-            display: flex;
-        }
-        
-        .edit-mode .website-card {
-            cursor: move;
-        }
-        
-        .edit-mode .delete-btn,
-        .edit-mode .edit-btn {
-            display: flex;
-        }
-        
-        /* 模态框样式 - 重构布局 */
+        /* 模态框样式 */
         .modal {
             display: none;
             position: fixed;
@@ -444,8 +376,6 @@
             width: 90%;
             max-width: 450px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            max-height: 80vh;
-            overflow-y: auto;
         }
         
         .modal h3 {
@@ -465,7 +395,6 @@
             width: 80px;
             font-weight: bold;
             font-size: 12px;
-            flex-shrink: 0;
         }
         
         .form-row input, .form-row select {
@@ -480,7 +409,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 8px;
-            margin: 15px 0 10px 0;
+            margin-top: 15px;
         }
         
         .btn {
@@ -489,101 +418,48 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
-            transition: background-color 0.3s;
         }
         
         .btn-primary {
-            background-color: #2c5aa0;
+            background: #2c5aa0;
             color: white;
         }
         
         .btn-secondary {
-            background-color: #ddd;
+            background: #ddd;
             color: #333;
         }
         
         .btn-danger {
-            background-color: #e74c3c;
+            background: #e74c3c;
             color: white;
         }
         
-        .btn-small {
-            padding: 3px 8px;
-            font-size: 11px;
+        /* 装饰图片样式 */
+        .decoration-left, .decoration-right {
+            position: fixed;
+            top: auto;
+            bottom: calc(100% - 170px);
+            z-index: 1;
+            opacity: 0.8;
+            pointer-events: none;
+            width: min(150px, 15vw);
+            height: auto;
+            max-width: 20vw; 
+            min-width: 60px;
         }
         
-        .btn:hover {
-            opacity: 0.9;
+        .decoration-left {
+            left: max(2%, 5px);
         }
         
-        .custom-icon-section {
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-            margin-top: 10px;
-        }
-        
-        .custom-icon-input {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 8px;
-        }
-        
-        .custom-icon-input input {
-            flex: 1;
-        }
-        
-        .custom-icons-list {
-            max-height: 80px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            background: #f9f9f9;
-        }
-        
-        .custom-icon-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 5px;
-            margin-bottom: 2px;
-            background: white;
-            border-radius: 3px;
-            font-size: 11px;
-        }
-        
-        .custom-icon-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .password-hint {
-            font-size: 10px;
-            color: #666;
-            margin-top: 4px;
-            text-align: center;
+        .decoration-right {
+            right: max(2%, 5px);
         }
         
         @media (max-width: 768px) {
             .decoration-left, .decoration-right {
-                display: none;
-            }
-            
-            .control-panel {
-                position: relative;
-                top: 10px;
-                right: 10px;
-                z-index: 1000;
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                align-items: flex-end;
-                font-size: 11px;
-                background: none;
-                padding: 0;
-            }
-            
-            header {
-                padding-top: 0;
+                display: block;
             }
             
             .websites-grid {
@@ -596,65 +472,20 @@
                 height: 35px;
                 font-size: 16px;
             }
-            
-            .website-name {
-                font-size: 10px;
-            }
-            
-            .category-tab {
-                padding: 6px 15px;
-                font-size: 13px;
-            }
-            
-            .search-container {
-                max-width: 400px;
-            }
-            
-            .search-box input {
-                max-width: 400px;
-                min-width: 200px;
-            }
-            
-            .form-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 5px;
-            }
-            
-            .form-row label {
-                width: auto;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .control-panel {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .search-container {
-                max-width: 300px;
-            }
-            
-            .search-box input {
-                max-width: 300px;
-                min-width: 150px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- 装饰图片 -->
-    <img src="left.png" alt="左侧装饰" class="decoration-left">
-    <img src="right.png" alt="右侧装饰" class="decoration-right">
+    <!-- 装饰图片延迟加载 -->
+    <img src="left.png" alt="左侧装饰" class="decoration-left" loading="lazy">
+    <img src="right.png" alt="右侧装饰" class="decoration-right" loading="lazy">
     
     <div class="container">
         <header>
-            <!-- 右上角控制面板 -->
             <div class="control-panel">
                 <div class="sync-status" id="syncStatus">已同步</div>
                 <button class="reset-data-btn" id="resetDataBtn" title="初始化数据">
-                    <i class="fas fa-redo"></i> 初始化
+                    初始化
                 </button>
             </div>
             
@@ -664,7 +495,7 @@
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="输入关键词进行全网搜索...">
                     <button id="searchButton" title="搜索">
-                        <i class="fas fa-search"></i>
+                        <i class="fa-search"></i>
                     </button>
                 </div>
             </div>
@@ -672,8 +503,8 @@
         
         <div class="categories-tabs">
             <div class="category-tab active" data-category="work">工作</div>
-            <div class="category-tab" data-category="social">社交</div>
-            <div class="category-tab" data-category="entertainment">娱乐</div>
+            <div class="category-tab" data-category="social">工具</div>
+            <div class="category-tab" data-category="entertainment">生活</div>
             <div class="category-tab" data-category="learning">学习</div>
         </div>
         
@@ -683,51 +514,51 @@
                 <h2 class="category-title">工作</h2>
                 <div class="category-actions">
                     <button class="action-btn edit-mode-toggle" data-category="work" title="进入编辑模式">
-                        <i class="fas fa-edit"></i> 编辑
+                        编辑
                     </button>
                     <button class="action-btn add-website-btn" data-category="work" title="添加新网站">
-                        <i class="fas fa-plus"></i> 添加
+                        添加
                     </button>
                 </div>
             </div>
             <div class="websites-grid" id="work-grid">
-                <!-- 工作网站将通过JavaScript动态生成 -->
+                <div class="loading">加载中...</div>
             </div>
         </div>
         
-        <!-- 社交板块 -->
+        <!-- 工具板块 -->
         <div class="category-content" id="social-content">
             <div class="category-header">
-                <h2 class="category-title">社交</h2>
+                <h2 class="category-title">工具</h2>
                 <div class="category-actions">
                     <button class="action-btn edit-mode-toggle" data-category="social" title="进入编辑模式">
-                        <i class="fas fa-edit"></i> 编辑
+                        编辑
                     </button>
                     <button class="action-btn add-website-btn" data-category="social" title="添加新网站">
-                        <i class="fas fa-plus"></i> 添加
+                        添加
                     </button>
                 </div>
             </div>
             <div class="websites-grid" id="social-grid">
-                <!-- 社交网站将通过JavaScript动态生成 -->
+                <div class="loading">加载中...</div>
             </div>
         </div>
         
-        <!-- 娱乐板块 -->
+        <!-- 生活板块 -->
         <div class="category-content" id="entertainment-content">
             <div class="category-header">
-                <h2 class="category-title">娱乐</h2>
+                <h2 class="category-title">生活</h2>
                 <div class="category-actions">
                     <button class="action-btn edit-mode-toggle" data-category="entertainment" title="进入编辑模式">
-                        <i class="fas fa-edit"></i> 编辑
+                        编辑
                     </button>
                     <button class="action-btn add-website-btn" data-category="entertainment" title="添加新网站">
-                        <i class="fas fa-plus"></i> 添加
+                        添加
                     </button>
                 </div>
             </div>
             <div class="websites-grid" id="entertainment-grid">
-                <!-- 娱乐网站将通过JavaScript动态生成 -->
+                <div class="loading">加载中...</div>
             </div>
         </div>
         
@@ -737,20 +568,20 @@
                 <h2 class="category-title">学习</h2>
                 <div class="category-actions">
                     <button class="action-btn edit-mode-toggle" data-category="learning" title="进入编辑模式">
-                        <i class="fas fa-edit"></i> 编辑
+                        编辑
                     </button>
                     <button class="action-btn add-website-btn" data-category="learning" title="添加新网站">
-                        <i class="fas fa-plus"></i> 添加
+                        添加
                     </button>
                 </div>
             </div>
             <div class="websites-grid" id="learning-grid">
-                <!-- 学习网站将通过JavaScript动态生成 -->
+                <div class="loading">加载中...</div>
             </div>
         </div>
     </div>
 
-    <!-- 添加网站模态框 -->
+    <!-- 模态框结构 -->
     <div class="modal" id="addWebsiteModal">
         <div class="modal-content">
             <h3>添加新网站</h3>
@@ -767,1140 +598,334 @@
                     <label for="websiteCategory">分类</label>
                     <select id="websiteCategory" required>
                         <option value="work">工作</option>
-                        <option value="social">社交</option>
-                        <option value="entertainment">娱乐</option>
+                        <option value="social">工具</option>
+                        <option value="entertainment">生活</option>
                         <option value="learning">学习</option>
                     </select>
                 </div>
                 <div class="form-row">
                     <label for="websiteIcon">网站图标</label>
                     <select id="websiteIcon" required>
-                        <option value="fas fa-flag">党徽</option>
-                        <option value="fas fa-landmark">政府网站</option>
-                        <option value="fab fa-microsoft">微软</option>
-                        <option value="fas fa-bolt">国家电网</option>
-                        <option value="fas fa-industry">国家电投</option>
-                        <option value="fas fa-server">服务器</option>
-                        <option value="fas fa-play-circle">视频</option>
-                        <option value="fas fa-search">搜索</option>
-                        <option value="fas fa-globe">默认图标</option>
-                        <option value="fab fa-google">Google</option>
-                        <option value="fab fa-github">GitHub</option>
-                        <option value="fab fa-youtube">YouTube</option>
-                        <option value="fab fa-weixin">微信</option>
-                        <option value="fab fa-zhihu">知乎</option>
-                        <option value="fas fa-graduation-cap">学习</option>
-                        <option value="fab fa-firefox">浏览器</option>
-                        <option value="fas fa-shopping-cart">购物</option>
-                        <option value="fas fa-music">音乐</option>
-                        <option value="fas fa-gamepad">游戏</option>
+                        <option value="fa-laptop">工作</option>
+                        <option value="fa-comment">工具</option>
+                        <option value="fa-film">生活</option>
+                        <option value="fa-seedling">学习</option>
                     </select>
-                </div>
-                
-                <!-- 自定义图标区域 -->
-                <div class="custom-icon-section">
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
-                        <button type="submit" class="btn btn-primary">添加</button>
-                    </div>
-                    
-                    <div class="custom-icon-input">
-                        <input type="text" id="customIconInput" placeholder="输入Font Awesome类名" style="font-size: 11px;">
-                        <button type="button" class="btn btn-primary btn-small" id="addCustomIconBtn">添加图标</button>
-                    </div>
-                    <div class="custom-icons-list" id="customIconsList">
-                        <!-- 自定义图标列表将在这里动态生成 -->
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 编辑网站模态框 -->
-    <div class="modal" id="editWebsiteModal">
-        <div class="modal-content">
-            <h3>编辑网站</h3>
-            <form id="editWebsiteForm">
-                <input type="hidden" id="editWebsiteId">
-                <div class="form-row">
-                    <label for="editWebsiteName">网站名称</label>
-                    <input type="text" id="editWebsiteName" required>
-                </div>
-                <div class="form-row">
-                    <label for="editWebsiteUrl">网站URL</label>
-                    <input type="url" id="editWebsiteUrl" required>
-                </div>
-                <div class="form-row">
-                    <label for="editWebsiteCategory">分类</label>
-                    <select id="editWebsiteCategory" required>
-                        <option value="work">工作</option>
-                        <option value="social">社交</option>
-                        <option value="entertainment">娱乐</option>
-                        <option value="learning">学习</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label for="editWebsiteIcon">网站图标</label>
-                    <select id="editWebsiteIcon" required>
-                        <option value="fas fa-flag">党徽</option>
-                        <option value="fas fa-landmark">政府网站</option>
-                        <option value="fab fa-microsoft">微软</option>
-                        <option value="fas fa-bolt">国家电网</option>
-                        <option value="fas fa-industry">国家电投</option>
-                        <option value="fas fa-server">服务器</option>
-                        <option value="fas fa-play-circle">视频</option>
-                        <option value="fas fa-search">搜索</option>
-                        <option value="fas fa-globe">默认图标</option>
-                        <option value="fab fa-google">Google</option>
-                        <option value="fab fa-github">GitHub</option>
-                        <option value="fab fa-youtube">YouTube</option>
-                        <option value="fab fa-weixin">微信</option>
-                        <option value="fab fa-zhihu">知乎</option>
-                        <option value="fas fa-graduation-cap">学习</option>
-                        <option value="fab fa-firefox">浏览器</option>
-                        <option value="fas fa-shopping-cart">购物</option>
-                        <option value="fas fa-music">音乐</option>
-                        <option value="fas fa-gamepad">游戏</option>
-                    </select>
-                </div>
-                
-                <!-- 自定义图标区域 -->
-                <div class="custom-icon-section">
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
-                        <button type="submit" class="btn btn-primary">保存</button>
-                    </div>
-                    
-                    <div class="custom-icons-list" id="editCustomIconsList">
-                        <!-- 自定义图标列表将在这里动态生成 -->
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 删除确认模态框 -->
-    <div class="modal" id="deleteConfirmModal">
-        <div class="modal-content">
-            <h3>确认删除</h3>
-            <p style="margin-bottom: 15px; font-size: 12px;">请输入删除密码以确认删除操作：</p>
-            <form id="deleteConfirmForm">
-                <div class="form-group">
-                    <label for="deletePassword">删除密码</label>
-                    <input type="password" id="deletePassword" required>
-                    <div class="password-hint" id="passwordHint"></div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">取消</button>
-                    <button type="submit" class="btn btn-danger">确认删除</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">添加</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 初始化确认模态框 -->
-    <div class="modal" id="initConfirmModal">
-        <div class="modal-content">
-            <h3>确认初始化</h3>
-            <p style="margin-bottom: 15px; font-size: 12px;">请输入初始化密码以确认重置所有数据：</p>
-            <form id="initConfirmForm">
-                <div class="form-group">
-                    <label for="initPassword">初始化密码</label>
-                    <input type="password" id="initPassword" required>
-                    <div class="password-hint" id="initPasswordHint"></div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelInitBtn">取消</button>
-                    <button type="submit" class="btn btn-danger">确认初始化</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    <!-- 核心JS - 优化版本 -->
     <script>
-        // JSONBin 配置
-        const JSONBIN_CONFIG = {
-            binId: '6919b2ddae596e708f5c9425',
-            apiKey: '$2a$10$FLHYkDLXRAceGVMLjmGOo.HhWhMechh3.PhY8y9LlRcIqv/GYnLZi',
-            baseUrl: 'https://api.jsonbin.io/v3/b'
-        };
-
-        // 全局变量
-        let websites = [];
-        let customIcons = [];
-        let nextId = 1;
-        let websiteToDelete = null;
-        let isEditMode = false;
-        let currentCategory = 'work';
-        let dragSrcElement = null;
-
-        // 默认网站数据
-        const defaultWebsites = [
-            {
-                id: 1,
-                name: "Google",
-                url: "https://www.google.com",
-                category: "work",
-                icon: "fab fa-google"
-            },
-            {
-                id: 2,
-                name: "GitHub",
-                url: "https://github.com",
-                category: "work",
-                icon: "fab fa-github"
-            },
-            {
-                id: 3,
-                name: "微信",
-                url: "https://wx.qq.com",
-                category: "social",
-                icon: "fab fa-weixin"
-            },
-            {
-                id: 4,
-                name: "知乎",
-                url: "https://www.zhihu.com",
-                category: "social",
-                icon: "fab fa-zhihu"
-            },
-            {
-                id: 5,
-                name: "YouTube",
-                url: "https://www.youtube.com",
-                category: "entertainment",
-                icon: "fab fa-youtube"
-            },
-            {
-                id: 6,
-                name: "Bilibili",
-                url: "https://www.bilibili.com",
-                category: "entertainment",
-                icon: "fas fa-play-circle"
-            },
-            {
-                id: 7,
-                name: "Coursera",
-                url: "https://www.coursera.org",
-                category: "learning",
-                icon: "fas fa-graduation-cap"
-            },
-            {
-                id: 8,
-                name: "MDN Web",
-                url: "https://developer.mozilla.org",
-                category: "learning",
-                icon: "fab fa-firefox"
-            }
-        ];
-
-        // DOM 加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM 加载完成，开始初始化应用...');
-            initApp();
-        });
-
-        // 生成删除密码
-        function generateDeletePassword() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            return `del${year}${month}${day}`;
-        }
-
-        // 重置数据功能
-        function initData() {
-            const initConfirmModal = document.getElementById('initConfirmModal');
-            if (initConfirmModal) {
-                updateInitPasswordHint();
-                initConfirmModal.style.display = 'flex';
-            }
-        }
-
-        // 执行初始化数据
-        function performInitData() {
-            localStorage.removeItem('myNavigationWebsites');
-            localStorage.removeItem('myNavigationCustomIcons');
-            websites = [...defaultWebsites];
-            customIcons = [];
-            nextId = Math.max(...websites.map(w => w.id)) + 1;
-            saveWebsites(websites);
-            saveCustomIcons();
-            renderWebsites();
-            updateCustomIconsList();
+        // 立即执行的核心功能
+        (function() {
+            'use strict';
             
-            // 居中显示提示信息
-            showCenteredAlert('数据初始化成功！');
-            
-            const initConfirmModal = document.getElementById('initConfirmModal');
-            if (initConfirmModal) {
-                initConfirmModal.style.display = 'none';
-            }
-            const initConfirmForm = document.getElementById('initConfirmForm');
-            if (initConfirmForm) {
-                initConfirmForm.reset();
-            }
-        }
-
-        // 居中显示提示信息
-        function showCenteredAlert(message) {
-            // 创建自定义提示框
-            const alertBox = document.createElement('div');
-            alertBox.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 5px;
-                z-index: 3000;
-                font-size: 14px;
-                max-width: 300px;
-                text-align: center;
-            `;
-            alertBox.textContent = message;
-            document.body.appendChild(alertBox);
-            
-            // 2秒后自动移除
-            setTimeout(() => {
-                document.body.removeChild(alertBox);
-            }, 2000);
-        }
-
-        // 更新初始化密码提示
-        function updateInitPasswordHint() {
-            const password = generateDeletePassword();
-            const passwordHint = document.getElementById('initPasswordHint');
-            if (passwordHint) {
-                passwordHint.textContent = `当前密码: ${password}`;
-            }
-        }
-
-        // 保存自定义图标
-        function saveCustomIcons() {
-            try {
-                localStorage.setItem('myNavigationCustomIcons', JSON.stringify(customIcons));
-                return true;
-            } catch (error) {
-                console.log('保存自定义图标失败:', error);
-                return false;
-            }
-        }
-
-        // 加载自定义图标
-        function loadCustomIcons() {
-            try {
-                const savedIcons = localStorage.getItem('myNavigationCustomIcons');
-                if (savedIcons) {
-                    return JSON.parse(savedIcons);
+            // 配置和默认数据
+            const CONFIG = {
+                JSONBIN: {
+                    binId: '6919b2ddae596e708f5c9425',
+                    apiKey: '$2a$10$FLHYkDLXRAceGVMLjmGOo.HhWhMechh3.PhY8y9LlRcIqv/GYnLZi',
+                    baseUrl: 'https://api.jsonbin.io/v3/b'
                 }
-                return [];
-            } catch (error) {
-                console.log('加载自定义图标失败:', error);
-                return [];
-            }
-        }
+            };
 
-        // 添加自定义图标
-        function addCustomIcon(iconClass) {
-            if (iconClass && !customIcons.includes(iconClass)) {
-                customIcons.push(iconClass);
-                saveCustomIcons();
-                updateCustomIconsList();
-                return true;
-            }
-            return false;
-        }
+            // 使用方案二的图标
+            const DEFAULT_WEBSITES = [
+                { id: 1, name: "Google", url: "https://www.google.com", category: "work", icon: "fa-laptop" },
+                { id: 2, name: "GitHub", url: "https://github.com", category: "work", icon: "fa-laptop" },
+                { id: 3, name: "微信", url: "https://wx.qq.com", category: "social", icon: "fa-comment" },
+                { id: 4, name: "知乎", url: "https://www.zhihu.com", category: "social", icon: "fa-comment" },
+                { id: 5, name: "YouTube", url: "https://www.youtube.com", category: "entertainment", icon: "fa-film" },
+                { id: 6, name: "Bilibili", url: "https://www.bilibili.com", category: "entertainment", icon: "fa-film" },
+                { id: 7, name: "Coursera", url: "https://www.coursera.org", category: "learning", icon: "fa-seedling" },
+                { id: 8, name: "MDN Web", url: "https://developer.mozilla.org", category: "learning", icon: "fa-seedling" }
+            ];
 
-        // 删除自定义图标
-        function removeCustomIcon(iconClass) {
-            const index = customIcons.indexOf(iconClass);
-            if (index > -1) {
-                customIcons.splice(index, 1);
-                saveCustomIcons();
-                updateCustomIconsList();
-                return true;
-            }
-            return false;
-        }
+            // 状态管理
+            let state = {
+                websites: [],
+                currentCategory: 'work',
+                nextId: 1,
+                isEditMode: false
+            };
 
-        // 更新自定义图标列表显示
-        function updateCustomIconsList() {
-            const addList = document.getElementById('customIconsList');
-            const editList = document.getElementById('editCustomIconsList');
-            
-            if (addList) {
-                addList.innerHTML = '';
-                customIcons.forEach(iconClass => {
-                    const iconItem = document.createElement('div');
-                    iconItem.className = 'custom-icon-item';
-                    iconItem.innerHTML = `
-                        <span><i class="${iconClass}"></i> ${iconClass}</span>
-                        <button type="button" class="btn btn-danger btn-small" data-icon="${iconClass}">删除</button>
+            // 工具函数
+            const utils = {
+                generateDeletePassword() {
+                    const now = new Date();
+                    return `del${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+                },
+                
+                showAlert(message) {
+                    const alert = document.createElement('div');
+                    alert.textContent = message;
+                    alert.style.cssText = `
+                        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                        background: #333; color: white; padding: 10px 20px; border-radius: 5px;
+                        z-index: 10000; font-size: 14px;
                     `;
-                    addList.appendChild(iconItem);
-                });
-            }
-            
-            if (editList) {
-                editList.innerHTML = '';
-                customIcons.forEach(iconClass => {
-                    const iconItem = document.createElement('div');
-                    iconItem.className = 'custom-icon-item';
-                    iconItem.innerHTML = `
-                        <span><i class="${iconClass}"></i> ${iconClass}</span>
-                        <button type="button" class="btn btn-danger btn-small" data-icon="${iconClass}">删除</button>
-                    `;
-                    editList.appendChild(iconItem);
-                });
-            }
-            
-            // 为删除按钮添加事件监听
-            document.querySelectorAll('.custom-icons-list .btn-danger').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const iconClass = this.getAttribute('data-icon');
-                    if (confirm(`确定要删除自定义图标 "${iconClass}" 吗？`)) {
-                        removeCustomIcon(iconClass);
-                    }
-                });
-            });
-        }
-
-        // 更新同步状态显示
-        function updateSyncStatus(message, type = '') {
-            const syncStatus = document.getElementById('syncStatus');
-            if (syncStatus) {
-                syncStatus.textContent = message;
-                syncStatus.className = 'sync-status';
-                if (type) {
-                    syncStatus.classList.add(type);
+                    document.body.appendChild(alert);
+                    setTimeout(() => alert.remove(), 2000);
                 }
-            }
-        }
+            };
 
-        // 云同步功能
-        async function syncToCloud() {
-            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE' || 
-                !JSONBIN_CONFIG.apiKey || JSONBIN_CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
-                updateSyncStatus('未配置云同步');
-                return false;
-            }
-
-            try {
-                updateSyncStatus('正在同步', 'syncing');
-                
-                const response = await fetch(`${JSONBIN_CONFIG.baseUrl}/${JSONBIN_CONFIG.binId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_CONFIG.apiKey,
-                        'X-Bin-Name': 'Personal Navigation Data'
-                    },
-                    body: JSON.stringify({
-                        websites: websites,
-                        customIcons: customIcons,
-                        lastUpdated: new Date().toISOString(),
-                        version: '1.0'
-                    })
-                });
-
-                if (response.ok) {
-                    updateSyncStatus('同步完成', 'success');
-                    return true;
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                updateSyncStatus('同步失败', 'error');
-                return false;
-            }
-        }
-
-        async function syncFromCloud() {
-            if (!JSONBIN_CONFIG.binId || JSONBIN_CONFIG.binId === 'YOUR_BIN_ID_HERE') {
-                return false;
-            }
-
-            try {
-                updateSyncStatus('正在同步', 'syncing');
-                
-                const response = await fetch(`${JSONBIN_CONFIG.baseUrl}/${JSONBIN_CONFIG.binId}/latest`, {
-                    headers: {
-                        'X-Master-Key': JSONBIN_CONFIG.apiKey
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.record && data.record.websites) {
-                        websites = data.record.websites;
-                        customIcons = data.record.customIcons || [];
-                        if (websites.length > 0) {
-                            nextId = Math.max(...websites.map(w => w.id)) + 1;
-                        }
-                        updateSyncStatus('已同步', 'success');
-                        return true;
-                    }
-                }
-                throw new Error('无效的云端数据');
-            } catch (error) {
-                updateSyncStatus('同步失败', 'error');
-                return false;
-            }
-        }
-     
-        // 加载网站数据
-        async function loadWebsites() {
-            try {
-                const savedWebsites = localStorage.getItem('myNavigationWebsites');
-                if (savedWebsites) {
-                    const parsed = JSON.parse(savedWebsites);
-                    console.log('从本地存储加载的数据:', parsed);
-                    
-                    // 检查数据格式是否兼容
-                    if (parsed.length > 0 && parsed[0].icon && parsed[0].icon.includes('<')) {
-                        // 旧格式数据，需要重置
-                        console.log('检测到旧格式数据，使用默认数据');
-                        return defaultWebsites;
-                    }
-                    
-                    return parsed;
-                }
-                
-                const cloudSuccess = await syncFromCloud();
-                if (cloudSuccess) {
-                    await saveWebsites(websites);
-                    return websites;
-                }
-                
-                console.log('使用默认数据');
-                return defaultWebsites;
-                
-            } catch (error) {
-                console.log('加载网站数据失败，使用默认数据:', error);
-                return defaultWebsites;
-            }
-        }
-     
-        // 保存网站数据
-        async function saveWebsites(websitesToSave) {
-            try {
-                localStorage.setItem('myNavigationWebsites', JSON.stringify(websitesToSave));
-                console.log('数据已保存到本地存储:', websitesToSave);
-                
-                setTimeout(() => {
-                    syncToCloud();
-                }, 1000);
-                
-                return true;
-            } catch (error) {
-                console.log('保存网站数据失败:', error);
-                return false;
-            }
-        }
-     
-        // 更新密码提示
-        function updatePasswordHint() {
-            const password = generateDeletePassword();
-            const passwordHint = document.getElementById('passwordHint');
-            if (passwordHint) {
-                passwordHint.textContent = `当前密码: ${password}`;
-            }
-        }
-     
-        // 渲染网站
-        function renderWebsites() {
-            console.log('开始渲染网站，数量:', websites.length);
-            console.log('网站数据:', websites);
-            
-            // 清空所有网格
-            document.querySelectorAll('.websites-grid').forEach(grid => {
-                grid.innerHTML = '';
-            });
-            
-            let renderedCount = 0;
-            
-            // 按分类渲染网站
-            websites.forEach(website => {
-                // 确保网站数据有效
-                if (!website || typeof website.id === 'undefined' || !website.category) {
-                    console.warn('无效的网站数据:', website);
-                    return;
-                }
-                
-                const grid = document.getElementById(`${website.category}-grid`);
-                if (grid) {
-                    const card = document.createElement('div');
-                    card.className = 'website-card';
-                    card.setAttribute('data-id', website.id.toString());
-                    card.setAttribute('draggable', isEditMode ? 'true' : 'false');
-                    
-                    // 确保图标不为空
-                    const iconClass = website.icon || 'fas fa-globe';
-                    
-                    card.innerHTML = `
-                        <button class="delete-btn" data-id="${website.id}" title="删除网站">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <button class="edit-btn" data-id="${website.id}" title="编辑网站">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                        <a href="${website.url}" target="_blank" class="website-link">
-                            <div class="website-icon">
-                                <i class="${iconClass}"></i>
-                            </div>
-                            <div class="website-name">${website.name}</div>
-                        </a>
-                    `;
-                
-                    grid.appendChild(card);
-                    renderedCount++;
-                    console.log('已添加网站卡片:', website.name);
-                } else {
-                    console.warn('未找到对应的网格:', `${website.category}-grid`);
-                }
-            });
-            
-            console.log(`网站渲染完成，成功渲染 ${renderedCount} 个网站`);
-            initEventListeners();
-            initDragAndDrop();
-        }
-     
-        // 初始化事件监听器
-        function initEventListeners() {
-            console.log('初始化网站卡片事件监听器');
-            
-            // 使用事件委托来处理动态生成的元素
-            document.querySelectorAll('.websites-grid').forEach(grid => {
-                // 移除旧的事件监听器
-                grid.removeEventListener('click', handleGridClick);
-                // 添加新的事件监听器
-                grid.addEventListener('click', handleGridClick);
-            });
-        }
-
-        // 处理网格点击事件（事件委托）
-        function handleGridClick(e) {
-            const deleteBtn = e.target.closest('.delete-btn');
-            const editBtn = e.target.closest('.edit-btn');
-            
-            if (deleteBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const id = parseInt(deleteBtn.getAttribute('data-id'));
-                confirmDeleteWebsite(id);
-            }
-            
-            if (editBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const id = parseInt(editBtn.getAttribute('data-id'));
-                editWebsite(id);
-            }
-        }
-     
-        // 初始化应用
-        async function initApp() {
-            console.log('开始初始化应用...');
-            
-            /////修改部分/////
-            const cloudSuccess = await syncFromCloud();
-            if (!cloudSuccess) {
-                 websites = await loadWebsites();
-            }
-            /////
-            ///websites = await loadWebsites();
-            customIcons = loadCustomIcons();
-            
-            if (websites.length > 0) {
-                nextId = Math.max(...websites.map(w => w.id)) + 1;
-            } else {
-                websites = defaultWebsites;
-                nextId = Math.max(...websites.map(w => w.id)) + 1;
-            }
-
-            updatePasswordHint();
-            updateInitPasswordHint();
-            renderWebsites();
-            updateCustomIconsList();
-            initAllEventListeners();
-        }
-     
-        // 初始化所有事件监听器
-        function initAllEventListeners() {
-            console.log('初始化所有事件监听器...');
-            
-            // 初始化数据按钮
-            const resetDataBtn = document.getElementById('resetDataBtn');
-            if (resetDataBtn) {
-                resetDataBtn.addEventListener('click', initData);
-                console.log('初始化数据按钮事件监听器已绑定');
-            }
-
-            // 初始化确认表单
-            const initConfirmForm = document.getElementById('initConfirmForm');
-            if (initConfirmForm) {
-                initConfirmForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const password = document.getElementById('initPassword').value;
-                    const correctPassword = generateDeletePassword();
-                    
-                    if (password === correctPassword) {
-                        performInitData();
-                    } else {
-                        showCenteredAlert('密码错误！请重新输入密码。');
-                        const initPassword = document.getElementById('initPassword');
-                        if (initPassword) {
-                            initPassword.value = '';
-                            initPassword.focus();
-                        }
-                    }
-                });
-            }
-
-            // 取消初始化按钮
-            const cancelInitBtn = document.getElementById('cancelInitBtn');
-            if (cancelInitBtn) {
-                cancelInitBtn.addEventListener('click', () => {
-                    const initConfirmModal = document.getElementById('initConfirmModal');
-                    if (initConfirmModal) {
-                        initConfirmModal.style.display = 'none';
-                    }
-                    const initConfirmForm = document.getElementById('initConfirmForm');
-                    if (initConfirmForm) {
-                        initConfirmForm.reset();
-                    }
-                });
-            }
-
-            // 添加自定义图标按钮
-            const addCustomIconBtn = document.getElementById('addCustomIconBtn');
-            const customIconInput = document.getElementById('customIconInput');
-            if (addCustomIconBtn && customIconInput) {
-                addCustomIconBtn.addEventListener('click', function() {
-                    const iconClass = customIconInput.value.trim();
-                    if (iconClass) {
-                        if (addCustomIcon(iconClass)) {
-                            customIconInput.value = '';
-                            showCenteredAlert('自定义图标添加成功！');
-                        } else {
-                            showCenteredAlert('图标已存在或格式不正确！');
-                        }
-                    } else {
-                        showCenteredAlert('请输入图标类名！');
-                    }
-                });
-                
-                // 按Enter键添加图标
-                customIconInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        addCustomIconBtn.click();
-                    }
-                });
-            }
-
-            // 搜索功能
-            const searchButton = document.getElementById('searchButton');
-            const searchInput = document.getElementById('searchInput');
-            
-            if (searchButton && searchInput) {
-                searchButton.addEventListener('click', performSearch);
-                searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        performSearch();
-                    }
-                });
-                console.log('搜索功能事件监听器已绑定');
-            }
-
-            // 分类标签切换
-            const categoryTabs = document.querySelectorAll('.category-tab');
-            const categoryContents = document.querySelectorAll('.category-content');
-            
-            if (categoryTabs.length > 0) {
-                categoryTabs.forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const category = tab.getAttribute('data-category');
-                        
-                        categoryTabs.forEach(t => t.classList.remove('active'));
-                        tab.classList.add('active');
-                        
-                        categoryContents.forEach(content => content.classList.remove('active'));
-                        const targetContent = document.getElementById(`${category}-content`);
-                        if (targetContent) {
-                            targetContent.classList.add('active');
-                        }
-                        
-                        currentCategory = category;
-                    });
-                });
-                console.log('分类标签事件监听器已绑定');
-            }
-
-            // 编辑模式切换
-            const editModeButtons = document.querySelectorAll('.edit-mode-toggle');
-            if (editModeButtons.length > 0) {
-                editModeButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const category = btn.getAttribute('data-category');
-                        const content = document.getElementById(`${category}-content`);
-                        
-                        if (content) {
-                            isEditMode = !isEditMode;
-                            
-                            if (isEditMode) {
-                                content.classList.add('edit-mode');
-                                btn.innerHTML = '<i class="fas fa-check"></i> 完成';
-                                document.querySelectorAll('.website-card').forEach(card => {
-                                    card.setAttribute('draggable', 'true');
-                                });
-                            } else {
-                                content.classList.remove('edit-mode');
-                                btn.innerHTML = '<i class="fas fa-edit"></i> 编辑';
-                                document.querySelectorAll('.website-card').forEach(card => {
-                                    card.setAttribute('draggable', 'false');
-                                    card.classList.remove('dragging', 'dragover');
-                                });
+            // 数据管理
+            const dataManager = {
+                async loadWebsites() {
+                    try {
+                        // 先尝试本地存储
+                        const saved = localStorage.getItem('myNavigationWebsites');
+                        if (saved) {
+                            const websites = JSON.parse(saved);
+                            if (websites.length > 0) {
+                                state.websites = websites;
+                                state.nextId = Math.max(...websites.map(w => w.id)) + 1;
+                                return true;
                             }
                         }
-                    });
-                });
-                console.log('编辑模式事件监听器已绑定');
-            }
-
-            // 添加网站功能
-            const addWebsiteButtons = document.querySelectorAll('.add-website-btn');
-            if (addWebsiteButtons.length > 0) {
-                addWebsiteButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const category = btn.getAttribute('data-category');
-                        const websiteCategory = document.getElementById('websiteCategory');
-                        if (websiteCategory) {
-                            websiteCategory.value = category;
-                        }
-                        const addWebsiteModal = document.getElementById('addWebsiteModal');
-                        if (addWebsiteModal) {
-                            addWebsiteModal.style.display = 'flex';
-                        }
-                    });
-                });
-                console.log('添加网站事件监听器已绑定');
-            }
-
-            // 关闭模态框
-            const cancelBtn = document.getElementById('cancelBtn');
-            const cancelEditBtn = document.getElementById('cancelEditBtn');
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => {
-                    const addWebsiteModal = document.getElementById('addWebsiteModal');
-                    if (addWebsiteModal) {
-                        addWebsiteModal.style.display = 'none';
+                        
+                        // 回退到默认数据
+                        state.websites = [...DEFAULT_WEBSITES];
+                        state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
+                        this.saveWebsites();
+                        return true;
+                        
+                    } catch (error) {
+                        console.error('加载数据失败:', error);
+                        state.websites = [...DEFAULT_WEBSITES];
+                        state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
+                        return true;
                     }
-                });
-            }
-            
-            if (cancelEditBtn) {
-                cancelEditBtn.addEventListener('click', () => {
-                    const editWebsiteModal = document.getElementById('editWebsiteModal');
-                    if (editWebsiteModal) {
-                        editWebsiteModal.style.display = 'none';
-                    }
-                });
-            }
-        
-            if (cancelDeleteBtn) {
-                cancelDeleteBtn.addEventListener('click', () => {
-                    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-                    if (deleteConfirmModal) {
-                        deleteConfirmModal.style.display = 'none';
-                        websiteToDelete = null;
-                        const deleteConfirmForm = document.getElementById('deleteConfirmForm');
-                        if (deleteConfirmForm) {
-                            deleteConfirmForm.reset();
-                        }
-                    }
-                });
-            }
-
-            // 点击模态框外部关闭
-            window.addEventListener('click', (e) => {
-                const addWebsiteModal = document.getElementById('addWebsiteModal');
-                const editWebsiteModal = document.getElementById('editWebsiteModal');
-                const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-                const initConfirmModal = document.getElementById('initConfirmModal');
+                },
                 
-                if (e.target === addWebsiteModal) {
-                    addWebsiteModal.style.display = 'none';
-                }
-                if (e.target === editWebsiteModal) {
-                    editWebsiteModal.style.display = 'none';
-                }
-                if (e.target === deleteConfirmModal) {
-                    deleteConfirmModal.style.display = 'none';
-                    websiteToDelete = null;
-                    const deleteConfirmForm = document.getElementById('deleteConfirmForm');
-                    if (deleteConfirmForm) {
-                        deleteConfirmForm.reset();
+                saveWebsites() {
+                    try {
+                        localStorage.setItem('myNavigationWebsites', JSON.stringify(state.websites));
+                        return true;
+                    } catch (error) {
+                        console.error('保存数据失败:', error);
+                        return false;
                     }
                 }
-                if (e.target === initConfirmModal) {
-                    initConfirmModal.style.display = 'none';
-                    const initConfirmForm = document.getElementById('initConfirmForm');
-                    if (initConfirmForm) {
-                        initConfirmForm.reset();
-                    }
-                }
-            });
+            };
 
-            // 处理添加表单提交
-            const addWebsiteForm = document.getElementById('addWebsiteForm');
-            if (addWebsiteForm) {
-                addWebsiteForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const name = document.getElementById('websiteName').value;
-                    const url = document.getElementById('websiteUrl').value;
-                    const category = document.getElementById('websiteCategory').value;
-                    const icon = document.getElementById('websiteIcon').value;
-                    
-                    const newWebsite = {
-                        id: nextId++,
-                        name: name,
-                        url: url.startsWith('http') ? url : 'https://' + url,
-                        category: category,
-                        icon: icon
+            // 渲染引擎
+            const renderer = {
+                init() {
+                    this.renderWebsites();
+                    this.initCoreEvents();
+                },
+                
+                renderWebsites() {
+                    const grids = {
+                        work: document.getElementById('work-grid'),
+                        social: document.getElementById('social-grid'),
+                        entertainment: document.getElementById('entertainment-grid'),
+                        learning: document.getElementById('learning-grid')
                     };
                     
-                    websites.push(newWebsite);
-                    await saveWebsites(websites);
-                    renderWebsites();
+                    // 清空所有网格
+                    Object.values(grids).forEach(grid => {
+                        if (grid) grid.innerHTML = '';
+                    });
                     
-                    const addWebsiteModal = document.getElementById('addWebsiteModal');
-                    if (addWebsiteModal) {
-                        addWebsiteModal.style.display = 'none';
+                    // 渲染网站
+                    state.websites.forEach(website => {
+                        const grid = grids[website.category];
+                        if (!grid) return;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'website-card';
+                        card.setAttribute('data-id', website.id);
+                        card.innerHTML = `
+                            <div class="edit-controls">
+                                <button class="delete-btn" data-id="${website.id}" title="删除网站">删</button>
+                                <button class="edit-btn" data-id="${website.id}" title="修改网站">改</button>
+                            </div>
+                            <a href="${website.url}" target="_blank" class="website-link">
+                                <div class="website-icon">
+                                    <i class="${website.icon}"></i>
+                                </div>
+                                <div class="website-name">${website.name}</div>
+                            </a>
+                        `;
+                        grid.appendChild(card);
+                    });
+                    
+                    // 移除加载提示
+                    document.querySelectorAll('.loading').forEach(loading => {
+                        loading.style.display = 'none';
+                    });
+                    
+                    // 初始化事件
+                    this.initCardEvents();
+                },
+                
+                initCoreEvents() {
+                    // 搜索功能
+                    const searchBtn = document.getElementById('searchButton');
+                    const searchInput = document.getElementById('searchInput');
+                    
+                    if (searchBtn && searchInput) {
+                        const performSearch = () => {
+                            const term = searchInput.value.trim();
+                            if (term) {
+                                window.open(`https://www.bing.com/search?q=${encodeURIComponent(term)}`, '_blank');
+                            }
+                        };
+                        
+                        searchBtn.addEventListener('click', performSearch);
+                        searchInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') performSearch();
+                        });
                     }
-                    addWebsiteForm.reset();
                     
-                    showCenteredAlert('网站添加成功！');
-                });
-            }
-
-            // 处理编辑表单提交
-            const editWebsiteForm = document.getElementById('editWebsiteForm');
-            if (editWebsiteForm) {
-                editWebsiteForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
+                    // 分类切换
+                    document.querySelectorAll('.category-tab').forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            const category = tab.dataset.category;
+                            
+                            // 更新活跃状态
+                            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                            document.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
+                            
+                            tab.classList.add('active');
+                            const content = document.getElementById(`${category}-content`);
+                            if (content) content.classList.add('active');
+                            
+                            state.currentCategory = category;
+                        });
+                    });
                     
-                    const id = parseInt(document.getElementById('editWebsiteId').value);
-                    const name = document.getElementById('editWebsiteName').value;
-                    const url = document.getElementById('editWebsiteUrl').value;
-                    const category = document.getElementById('editWebsiteCategory').value;
-                    const icon = document.getElementById('editWebsiteIcon').value;
+                    // 初始化按钮
+                    const resetBtn = document.getElementById('resetDataBtn');
+                    if (resetBtn) {
+                        resetBtn.addEventListener('click', () => {
+                            if (confirm('确定要重置所有数据吗？')) {
+                                state.websites = [...DEFAULT_WEBSITES];
+                                state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
+                                dataManager.saveWebsites();
+                                this.renderWebsites();
+                                utils.showAlert('数据重置成功！');
+                            }
+                        });
+                    }
                     
-                    const websiteIndex = websites.findIndex(w => w.id === id);
-                    if (websiteIndex !== -1) {
-                        websites[websiteIndex] = {
-                            id: id,
+                    // 编辑模式切换
+                    document.querySelectorAll('.edit-mode-toggle').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const category = btn.dataset.category;
+                            state.isEditMode = !state.isEditMode;
+                            
+                            // 显示/隐藏编辑按钮
+                            document.querySelectorAll('.edit-controls').forEach(editControl => {
+                                editControl.style.display = state.isEditMode ? 'flex' : 'none';
+                            });
+                            
+                            // 更新按钮文本
+                            btn.textContent = state.isEditMode ? '完成' : '编辑';
+                        });
+                    });
+                    
+                    // 添加网站按钮
+                    document.querySelectorAll('.add-website-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            document.getElementById('websiteCategory').value = btn.dataset.category;
+                            document.getElementById('addWebsiteModal').style.display = 'flex';
+                        });
+                    });
+                    
+                    // 模态框事件
+                    document.getElementById('cancelBtn').addEventListener('click', () => {
+                        document.getElementById('addWebsiteModal').style.display = 'none';
+                    });
+                    
+                    // 添加网站表单
+                    document.getElementById('addWebsiteForm').addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        
+                        const name = document.getElementById('websiteName').value;
+                        const url = document.getElementById('websiteUrl').value;
+                        const category = document.getElementById('websiteCategory').value;
+                        const icon = document.getElementById('websiteIcon').value;
+                        
+                        const newWebsite = {
+                            id: state.nextId++,
                             name: name,
                             url: url.startsWith('http') ? url : 'https://' + url,
                             category: category,
                             icon: icon
                         };
                         
-                        await saveWebsites(websites);
-                        renderWebsites();
+                        state.websites.push(newWebsite);
+                        dataManager.saveWebsites();
+                        this.renderWebsites();
                         
-                        const editWebsiteModal = document.getElementById('editWebsiteModal');
-                        if (editWebsiteModal) {
-                            editWebsiteModal.style.display = 'none';
+                        document.getElementById('addWebsiteModal').style.display = 'none';
+                        document.getElementById('addWebsiteForm').reset();
+                        
+                        utils.showAlert('网站添加成功！');
+                    });
+                    
+                    // 点击模态框外部关闭
+                    window.addEventListener('click', (e) => {
+                        if (e.target === document.getElementById('addWebsiteModal')) {
+                            document.getElementById('addWebsiteModal').style.display = 'none';
+                        }
+                    });
+                },
+                
+                initCardEvents() {
+                    // 使用事件委托处理动态生成的卡片
+                    document.addEventListener('click', (e) => {
+                        // 删除按钮
+                        if (e.target.closest('.delete-btn')) {
+                            const id = parseInt(e.target.closest('.delete-btn').dataset.id);
+                            if (confirm('确定要删除这个网站吗？')) {
+                                state.websites = state.websites.filter(w => w.id !== id);
+                                dataManager.saveWebsites();
+                                this.renderWebsites();
+                                utils.showAlert('网站删除成功！');
+                            }
                         }
                         
-                        showCenteredAlert('网站修改成功！');
-                    }
-                });
-            }
-
-            // 处理删除确认表单提交
-            const deleteConfirmForm = document.getElementById('deleteConfirmForm');
-            if (deleteConfirmForm) {
-                deleteConfirmForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const password = document.getElementById('deletePassword').value;
-                    const correctPassword = generateDeletePassword();
-                    
-                    if (password === correctPassword) {
-                        if (websiteToDelete) {
-                            websites = websites.filter(website => website.id !== websiteToDelete);
-                            await saveWebsites(websites);
-                            renderWebsites();
-                            
-                            showCenteredAlert('网站删除成功！');
+                        // 编辑按钮
+                        if (e.target.closest('.edit-btn')) {
+                            const id = parseInt(e.target.closest('.edit-btn').dataset.id);
+                            const website = state.websites.find(w => w.id === id);
+                            if (website) {
+                                document.getElementById('websiteName').value = website.name;
+                                document.getElementById('websiteUrl').value = website.url;
+                                document.getElementById('websiteCategory').value = website.category;
+                                document.getElementById('websiteIcon').value = website.icon;
+                                
+                                // 临时存储编辑的网站ID
+                                document.getElementById('addWebsiteForm').dataset.editingId = id;
+                                document.getElementById('addWebsiteModal').style.display = 'flex';
+                            }
                         }
-                        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-                        if (deleteConfirmModal) {
-                            deleteConfirmModal.style.display = 'none';
-                        }
-                        deleteConfirmForm.reset();
-                        websiteToDelete = null;
-                    } else {
-                        showCenteredAlert('密码错误！请重新输入密码。');
-                        const deletePassword = document.getElementById('deletePassword');
-                        if (deletePassword) {
-                            deletePassword.value = '';
-                            deletePassword.focus();
-                        }
-                    }
-                });
-            }
-
-            console.log('所有事件监听器初始化完成');
-        }
-     
-        // 搜索功能
-        function performSearch() {
-            const searchInput = document.getElementById('searchInput');
-            if (!searchInput) return;
-            
-            const searchTerm = searchInput.value.trim();
-            if (!searchTerm) return;
-            
-            window.open(`https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`, '_blank');
-        }
-     
-        // 编辑网站
-        function editWebsite(id) {
-            const website = websites.find(w => w.id === id);
-            if (website) {
-                const editWebsiteId = document.getElementById('editWebsiteId');
-                const editWebsiteName = document.getElementById('editWebsiteName');
-                const editWebsiteUrl = document.getElementById('editWebsiteUrl');
-                const editWebsiteCategory = document.getElementById('editWebsiteCategory');
-                const editWebsiteIcon = document.getElementById('editWebsiteIcon');
-                
-                if (editWebsiteId) editWebsiteId.value = website.id;
-                if (editWebsiteName) editWebsiteName.value = website.name;
-                if (editWebsiteUrl) editWebsiteUrl.value = website.url;
-                if (editWebsiteCategory) editWebsiteCategory.value = website.category;
-                if (editWebsiteIcon) editWebsiteIcon.value = website.icon || 'fas fa-globe';
-                
-                const editWebsiteModal = document.getElementById('editWebsiteModal');
-                if (editWebsiteModal) {
-                    editWebsiteModal.style.display = 'flex';
+                    });
                 }
-            }
-        }
-     
-        // 确认删除网站
-        function confirmDeleteWebsite(id) {
-            websiteToDelete = parseInt(id);
-            updatePasswordHint();
-            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
-            if (deleteConfirmModal) {
-                deleteConfirmModal.style.display = 'flex';
-            }
-        }
-     
-        // 初始化拖拽功能
-        function initDragAndDrop() {
-            const cards = document.querySelectorAll('.website-card');
-            
-            cards.forEach(card => {
-                card.removeEventListener('dragstart', handleDragStart);
-                card.removeEventListener('dragend', handleDragEnd);
-                card.removeEventListener('dragover', handleDragOver);
-                card.removeEventListener('dragenter', handleDragEnter);
-                card.removeEventListener('dragleave', handleDragLeave);
-                card.removeEventListener('drop', handleDrop);
+            };
+
+            // 应用启动
+            document.addEventListener('DOMContentLoaded', async function() {
+                console.log('🚀 快速启动中...');
                 
-                card.addEventListener('dragstart', handleDragStart);
-                card.addEventListener('dragend', handleDragEnd);
-                card.addEventListener('dragover', handleDragOver);
-                card.addEventListener('dragenter', handleDragEnter);
-                card.addEventListener('dragleave', handleDragLeave);
-                card.addEventListener('drop', handleDrop);
+                // 立即显示界面
+                await dataManager.loadWebsites();
+                renderer.init();
+                
+                console.log('✅ 应用启动完成');
             });
-        }
-     
-        function handleDragStart(e) {
-            if (!isEditMode) {
-                e.preventDefault();
-                return false;
-            }
-            
-            dragSrcElement = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
-            
-            this.classList.add('dragging');
-            
-            setTimeout(() => {
-                this.style.opacity = '0.4';
-            }, 0);
-        }
-     
-        function handleDragEnd(e) {
-            if (!isEditMode) return;
-            
-            this.style.opacity = '1';
-            this.classList.remove('dragging');
-            
-            document.querySelectorAll('.website-card').forEach(card => {
-                card.classList.remove('dragover');
-            });
-        }
-     
-        function handleDragOver(e) {
-            if (!isEditMode) return;
-            
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-     
-        function handleDragEnter(e) {
-            if (!isEditMode) return;
-            
-            this.classList.add('dragover');
-        }
-     
-        function handleDragLeave(e) {
-            if (!isEditMode) return;
-            
-            if (!this.contains(e.relatedTarget)) {
-                this.classList.remove('dragover');
-            }
-        }
-     
-        function handleDrop(e) {
-            if (!isEditMode) return;
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (dragSrcElement !== this) {
-                const dragId = parseInt(dragSrcElement.getAttribute('data-id'));
-                const dropId = parseInt(this.getAttribute('data-id'));
-                
-                const dragIndex = websites.findIndex(w => w.id === dragId);
-                const dropIndex = websites.findIndex(w => w.id === dropId);
-                
-                if (dragIndex !== -1 && dropIndex !== -1) {
-                    [websites[dragIndex], websites[dropIndex]] = [websites[dropIndex], websites[dragIndex]];
-                    saveWebsites(websites);
-                    renderWebsites();
-                }
-            }
-            
-            this.classList.remove('dragover');
-            return false;
-        }
+
+        })();
     </script>
 </body>
 </html>
