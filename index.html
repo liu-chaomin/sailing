@@ -268,15 +268,10 @@
         const validator = {
             isValidUrl(url) { try { return new URL(url).protocol === 'http:' || new URL(url).protocol === 'https:'; } catch { return false; } },
             isValidName(name) { return name && name.trim().length > 0 && name.trim().length <= 20; },
-            isDuplicateWebsite(websites, newWebsite, excludeId = null) {
-                return websites.some(website => website.id !== excludeId && 
-                    (website.name.toLowerCase() === newWebsite.name.toLowerCase() || website.url === newWebsite.url));
-            },
             validateWebsite(website, websites, isEdit = false) {
                 const errors = [];
                 if (!this.isValidName(website.name)) errors.push('网站名称不能为空且长度不能超过20个字符');
                 if (!this.isValidUrl(website.url)) errors.push('请输入有效的网址（http:// 或 https://）');
-                if (this.isDuplicateWebsite(websites, website, isEdit ? website.id : null)) errors.push('网站名称或网址已存在');
                 return { isValid: errors.length === 0, errors };
             }
         };
