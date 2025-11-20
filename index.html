@@ -1,482 +1,118 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="public, max-age=3600">
-    <meta http-equiv="Expires" content="0">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    
     <title>我的个人导航</title>
     <link rel="icon" href="logo.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="logo.ico">
     
-    <!-- 精简版Font Awesome - 只包含5个必要图标 -->
     <style>
-        /* 精简版Font Awesome图标 */
-        .fa-laptop:before {content: "🖥️"}
-        .fa-comment:before {content: "🛠️"}
-        .fa-film:before {content: "🍜"}
-        .fa-seedling:before {content: "🌱"}
-        .fa-search:before {content: "🔍"}
-    </style>
-    
-    <!-- 关键CSS内联 -->
-    <style>
-        /* 精简的关键CSS */
         :root {
-            --work-color: #0f59c1;
-            --social-color: #bc2c1c;
-            --entertainment-color: #791da1;
-            --learning-color: #149449;
-            --background-color: #eef2f7;
-            --card-color: #ffffff;
-            --text-color: #222222;
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.4;
-            padding: 15px;
-            min-height: 100vh;
-            font-size: 13px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-        
-        .search-container {
-            max-width: 560px;
-            margin: 0 auto 20px;
-            width: 90%;
-        }
-        
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-        
-        .search-box input {
-            width: 100%;
-            padding: 10px 40px 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            font-size: 13px;
-            box-shadow: var(--shadow);
-        }
-        
-        .search-box button {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            color: #2c5aa0;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .categories-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .category-tab {
-            padding: 8px 20px;
-            cursor: pointer;
-            font-size: 14px;
-            border-bottom: 2px solid transparent;
-            color: #666;
-        }
-        
-        .category-tab.active {
-            font-weight: bold;
-            border-bottom-color: #2c5aa0;
-            color: #2c5aa0;
-        }
-        
-        .category-content {
-            display: none;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: var(--shadow);
-            min-height: 300px;
-            background: white;
-        }
-        
-        .category-content.active {
-            display: block;
-        }
-        
-        .websites-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-        }
-        
-        .website-card {
-            background: white;
-            border-radius: 8px;
-            padding: 10px 5px;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-        }
-        
-        .website-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        .website-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .website-icon {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 5px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            font-size: 18px;
-        }
-        
-        #work-content .website-icon {
-            color: var(--work-color);
-        }
-        
-        #social-content .website-icon {
-            color: var(--social-color);
-        }
-        
-        #entertainment-content .website-icon {
-            color: var(--entertainment-color);
-        }
-        
-        #learning-content .website-icon {
-            color: var(--learning-color);
-        }
-        
-        .website-name {
-            font-weight: bold;
-            font-size: 11px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        /* 控制面板基础样式 */
-        .control-panel {
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            align-items: flex-end;
-            font-size: 11px;
-        }
-        
-        .sync-status {
-            font-size: 11px;
-            color: #666;
-        }
-        
-        .reset-data-btn {
-            background: none;
-            color: #666;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            font-size: 11px;
-            transition: color 0.3s;
-        }
-        
-        .reset-data-btn:hover {
-            color: #333;
-        }
-        
-        /* 分类头部样式 */
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-        }
-        
-        #work-content .category-header {
-            border-bottom: 1px solid var(--work-color);
-        }
-        
-        #social-content .category-header {
-            border-bottom: 1px solid var(--social-color);
-        }
-        
-        #entertainment-content .category-header {
-            border-bottom: 1px solid var(--entertainment-color);
-        }
-        
-        #learning-content .category-header {
-            border-bottom: 1px solid var(--learning-color);
-        }
-        
-        .category-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        
-        #work-content .category-title {
-            color: var(--work-color);
-        }
-        
-        #social-content .category-title {
-            color: var(--social-color);
-        }
-        
-        #entertainment-content .category-title {
-            color: var(--entertainment-color);
-        }
-        
-        #learning-content .category-title {
-            color: var(--learning-color);
-        }
-        
-        .category-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        #work-content .action-btn {
-            color: var(--work-color);
-        }
-        
-        #social-content .action-btn {
-            color: var(--social-color);
-        }
-        
-        #entertainment-content .action-btn {
-            color: var(--entertainment-color);
-        }
-        
-        #learning-content .action-btn {
-            color: var(--learning-color);
-        }
-        
-        .action-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        
-        /* 编辑按钮样式 */
-        .edit-controls {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            display: none;
-            gap: 2px;
-        }
-        
-        .delete-btn, .edit-btn {
-            background: none;
-            border: none;
-            border-radius: 3px;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        
-        .delete-btn {
-            color: #e74c3c;
-        }
-        
-        .edit-btn {
-            color: #3498db;
-        }
-        
-        /* 模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal h3 {
-            margin-bottom: 15px;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            gap: 10px;
-        }
-        
-        .form-row label {
-            width: 80px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        
-        .form-row input, .form-row select {
-            flex: 1;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-        
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 15px;
-        }
-        
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .btn-primary {
-            background: #2c5aa0;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #ddd;
-            color: #333;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        /* 装饰图片样式 */
-        .decoration-left, .decoration-right {
-            position: fixed;
-            top: auto;
-            bottom: calc(100% - 170px);
-            z-index: 1;
-            opacity: 0.8;
-            pointer-events: none;
-            width: min(150px, 15vw);
-            height: auto;
-            max-width: 20vw; 
-            min-width: 60px;
-        }
-        
-        .decoration-left {
-            left: max(2%, 5px);
-        }
-        
-        .decoration-right {
-            right: max(2%, 5px);
-        }
+            --work-color: #0f59c1; --social-color: #bc2c1c;
+            --entertainment-color: #791da1; --learning-color: #149449;
+            --background-color: #eef2f7; --card-color: #ffffff;
+            --text-color: #222222; --shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
+        body { background: var(--background-color); color: var(--text-color); line-height: 1.4; padding: 15px; min-height: 100vh; font-size: 13px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 20px; position: relative; }
+        h1 { color: #2c3e50; margin-bottom: 15px; font-size: 1.8rem; }
+        
+        .search-container { max-width: 560px; margin: 0 auto 20px; width: 90%; }
+        .search-box { position: relative; width: 100%; }
+        .search-box input { width: 100%; padding: 10px 40px 10px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; box-shadow: var(--shadow); }
+        .search-box button { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: none; border: none; width: 30px; height: 30px; cursor: pointer; }
+        
+        .categories-tabs { display: flex; justify-content: center; margin-bottom: 15px; border-bottom: 1px solid #ddd; }
+        .category-tab { padding: 8px 20px; cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent; color: #666; }
+        .category-tab.active { font-weight: bold; border-bottom-color: #2c5aa0; color: #2c5aa0; }
+        
+        .category-content { display: none; border-radius: 10px; padding: 15px; box-shadow: var(--shadow); min-height: 300px; background: transparent; }
+        .category-content.active { display: block; }
+        
+        .websites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; }
+        .website-card { background: white; border-radius: 8px; padding: 10px 5px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+        .website-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
+        .website-link { display: block; text-decoration: none; color: inherit; }
+        .website-icon { width: 40px; height: 40px; margin: 0 auto 5px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .website-name { font-weight: bold; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .control-panel { position: absolute; top: 0; right: 0; display: flex; flex-direction: column; gap: 5px; align-items: flex-end; font-size: 11px; }
+        .sync-status { font-size: 11px; color: #666; }
+        .reset-data-btn { background: none; color: #666; border: none; cursor: pointer; font-size: 11px; }
+        .reset-data-btn:hover { color: #333; }
+        
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; }
+        .category-title { font-size: 16px; font-weight: bold; }
+        .category-actions { display: flex; gap: 8px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px; transition: background-color 0.3s; }
+        .action-btn:hover { background-color: rgba(0, 0, 0, 0.05); }
+        
+        .edit-controls { position: absolute; top: 2px; right: 2px; display: none; gap: 2px; }
+        .delete-btn, .edit-btn { background: none; border: none; border-radius: 3px; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .delete-btn { color: #e74c3c; }
+        .edit-btn { color: #3498db; }
+        
+        .website-card.dragging { opacity: 0.4; transform: scale(0.95); }
+        .website-card.dragover { border: 2px dashed #2c5aa0; background-color: rgba(44, 90, 160, 0.05); }
+        .edit-mode .website-card { cursor: move; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        .modal h3 { margin-bottom: 15px; font-size: 16px; text-align: center; }
+        .form-row { display: flex; align-items: center; margin-bottom: 12px; gap: 10px; }
+        .form-row label { width: 80px; font-weight: bold; font-size: 12px; }
+        .form-row input, .form-row select { flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+        .btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-primary { background: #2c5aa0; color: white; }
+        .btn-secondary { background: #ddd; color: #333; }
+        
+        .decoration-left, .decoration-right { position: fixed; top: auto; bottom: calc(100% - 170px); z-index: 1; opacity: 0.8; pointer-events: none; width: min(150px, 15vw); height: auto; max-width: 20vw; min-width: 60px; }
+        .decoration-left { left: max(2%, 5px); }
+        .decoration-right { right: max(2%, 5px); }
+        
+        .category-header[data-category="work"] { border-bottom: 1px solid var(--work-color); }
+        .category-header[data-category="social"] { border-bottom: 1px solid var(--social-color); }
+        .category-header[data-category="entertainment"] { border-bottom: 1px solid var(--entertainment-color); }
+        .category-header[data-category="learning"] { border-bottom: 1px solid var(--learning-color); }
+        
+        .category-title[data-category="work"] { color: var(--work-color); }
+        .category-title[data-category="social"] { color: var(--social-color); }
+        .category-title[data-category="entertainment"] { color: var(--entertainment-color); }
+        .category-title[data-category="learning"] { color: var(--learning-color); }
+        
+        .action-btn[data-category="work"] { color: var(--work-color); }
+        .action-btn[data-category="social"] { color: var(--social-color); }
+        .action-btn[data-category="entertainment"] { color: var(--entertainment-color); }
+        .action-btn[data-category="learning"] { color: var(--learning-color); }
+        
+        .website-icon[data-category="work"] { color: var(--work-color); }
+        .website-icon[data-category="social"] { color: var(--social-color); }
+        .website-icon[data-category="entertainment"] { color: var(--entertainment-color); }
+        .website-icon[data-category="learning"] { color: var(--learning-color); }
         
         @media (max-width: 768px) {
-            .decoration-left, .decoration-right {
-                display: block;
-            }
-            
-            .websites-grid {
-                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-                gap: 10px;
-            }
-            
-            .website-icon {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
+            .websites-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+            .website-icon { width: 35px; height: 35px; font-size: 16px; }
         }
+        .category-content#work-content { background: #f0f7ff; }
+        .category-content#social-content { background: #fff0f0; }
+        .category-content#entertainment-content { background: #f8f0ff; }
+        .category-content#learning-content { background: #f0fff4; }
+        
+        .fa-laptop:before { content: "🖥️" }
+        .fa-comment:before { content: "🛠️" }
+        .fa-film:before { content: "🍜" }
+        .fa-seedling:before { content: "🌱" }
+        .fa-search:before { content: "🔍" }
     </style>
 </head>
 <body>
-    <!-- 装饰图片延迟加载 -->
     <img src="left.png" alt="左侧装饰" class="decoration-left" loading="lazy">
     <img src="right.png" alt="右侧装饰" class="decoration-right" loading="lazy">
     
@@ -484,132 +120,85 @@
         <header>
             <div class="control-panel">
                 <div class="sync-status" id="syncStatus">已同步</div>
-                <button class="reset-data-btn" id="resetDataBtn" title="初始化数据">
-                    初始化
-                </button>
+                <button class="reset-data-btn" id="resetDataBtn" title="初始化数据">初始化</button>
             </div>
-            
             <h1>我的个人导航</h1>
-            
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="输入关键词进行全网搜索...">
-                    <button id="searchButton" title="搜索">
-                        <i class="fa-search"></i>
-                    </button>
+                    <input type="text" id="searchInput" placeholder="输入关键词进行全网搜索..." aria-label="搜索输入框">
+                    <button id="searchButton" title="搜索" aria-label="搜索"><i class="fa-search"></i></button>
                 </div>
             </div>
         </header>
         
         <div class="categories-tabs">
-            <div class="category-tab active" data-category="work">工作</div>
-            <div class="category-tab" data-category="social">工具</div>
-            <div class="category-tab" data-category="entertainment">生活</div>
-            <div class="category-tab" data-category="learning">学习</div>
+            <div class="category-tab active" data-category="work" role="tab" aria-selected="true">工作</div>
+            <div class="category-tab" data-category="social" role="tab" aria-selected="false">工具</div>
+            <div class="category-tab" data-category="entertainment" role="tab" aria-selected="false">生活</div>
+            <div class="category-tab" data-category="learning" role="tab" aria-selected="false">学习</div>
         </div>
         
-        <!-- 工作板块 -->
         <div class="category-content active" id="work-content">
-            <div class="category-header">
-                <h2 class="category-title">工作</h2>
+            <div class="category-header" data-category="work">
+                <h2 class="category-title" data-category="work">工作</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="work" title="进入编辑模式">
-                        编辑
-                    </button>
-                    <button class="action-btn add-website-btn" data-category="work" title="添加新网站">
-                        添加
-                    </button>
+                    <button class="action-btn edit-mode-toggle" data-category="work" title="进入编辑模式" aria-pressed="false">编辑</button>
+                    <button class="action-btn add-website-btn" data-category="work" title="添加新网站" aria-label="添加新网站">添加</button>
                 </div>
             </div>
-            <div class="websites-grid" id="work-grid">
-                <div class="loading">加载中...</div>
-            </div>
+            <div class="websites-grid" id="work-grid" role="grid" aria-label="工作网站网格"><div class="loading">加载中...</div></div>
         </div>
         
-        <!-- 工具板块 -->
         <div class="category-content" id="social-content">
-            <div class="category-header">
-                <h2 class="category-title">工具</h2>
+            <div class="category-header" data-category="social">
+                <h2 class="category-title" data-category="social">工具</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="social" title="进入编辑模式">
-                        编辑
-                    </button>
-                    <button class="action-btn add-website-btn" data-category="social" title="添加新网站">
-                        添加
-                    </button>
+                    <button class="action-btn edit-mode-toggle" data-category="social" title="进入编辑模式" aria-pressed="false">编辑</button>
+                    <button class="action-btn add-website-btn" data-category="social" title="添加新网站" aria-label="添加新网站">添加</button>
                 </div>
             </div>
-            <div class="websites-grid" id="social-grid">
-                <div class="loading">加载中...</div>
-            </div>
+            <div class="websites-grid" id="social-grid" role="grid" aria-label="工具网站网格"><div class="loading">加载中...</div></div>
         </div>
         
-        <!-- 生活板块 -->
         <div class="category-content" id="entertainment-content">
-            <div class="category-header">
-                <h2 class="category-title">生活</h2>
+            <div class="category-header" data-category="entertainment">
+                <h2 class="category-title" data-category="entertainment">生活</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="entertainment" title="进入编辑模式">
-                        编辑
-                    </button>
-                    <button class="action-btn add-website-btn" data-category="entertainment" title="添加新网站">
-                        添加
-                    </button>
+                    <button class="action-btn edit-mode-toggle" data-category="entertainment" title="进入编辑模式" aria-pressed="false">编辑</button>
+                    <button class="action-btn add-website-btn" data-category="entertainment" title="添加新网站" aria-label="添加新网站">添加</button>
                 </div>
             </div>
-            <div class="websites-grid" id="entertainment-grid">
-                <div class="loading">加载中...</div>
-            </div>
+            <div class="websites-grid" id="entertainment-grid" role="grid" aria-label="生活网站网格"><div class="loading">加载中...</div></div>
         </div>
         
-        <!-- 学习板块 -->
         <div class="category-content" id="learning-content">
-            <div class="category-header">
-                <h2 class="category-title">学习</h2>
+            <div class="category-header" data-category="learning">
+                <h2 class="category-title" data-category="learning">学习</h2>
                 <div class="category-actions">
-                    <button class="action-btn edit-mode-toggle" data-category="learning" title="进入编辑模式">
-                        编辑
-                    </button>
-                    <button class="action-btn add-website-btn" data-category="learning" title="添加新网站">
-                        添加
-                    </button>
+                    <button class="action-btn edit-mode-toggle" data-category="learning" title="进入编辑模式" aria-pressed="false">编辑</button>
+                    <button class="action-btn add-website-btn" data-category="learning" title="添加新网站" aria-label="添加新网站">添加</button>
                 </div>
             </div>
-            <div class="websites-grid" id="learning-grid">
-                <div class="loading">加载中...</div>
-            </div>
+            <div class="websites-grid" id="learning-grid" role="grid" aria-label="学习网站网格"><div class="loading">加载中...</div></div>
         </div>
     </div>
 
-    <!-- 模态框结构 -->
-    <div class="modal" id="addWebsiteModal">
+    <div class="modal" id="addWebsiteModal" aria-hidden="true" role="dialog">
         <div class="modal-content">
             <h3>添加新网站</h3>
             <form id="addWebsiteForm">
-                <div class="form-row">
-                    <label for="websiteName">网站名称</label>
-                    <input type="text" id="websiteName" required>
-                </div>
-                <div class="form-row">
-                    <label for="websiteUrl">网站URL</label>
-                    <input type="url" id="websiteUrl" required>
-                </div>
-                <div class="form-row">
-                    <label for="websiteCategory">分类</label>
+                <div class="form-row"><label for="websiteName">网站名称</label><input type="text" id="websiteName" required></div>
+                <div class="form-row"><label for="websiteUrl">网站URL</label><input type="url" id="websiteUrl" required></div>
+                <div class="form-row"><label for="websiteCategory">分类</label>
                     <select id="websiteCategory" required>
-                        <option value="work">工作</option>
-                        <option value="social">工具</option>
-                        <option value="entertainment">生活</option>
-                        <option value="learning">学习</option>
+                        <option value="work">工作</option><option value="social">工具</option>
+                        <option value="entertainment">生活</option><option value="learning">学习</option>
                     </select>
                 </div>
-                <div class="form-row">
-                    <label for="websiteIcon">网站图标</label>
+                <div class="form-row"><label for="websiteIcon">网站图标</label>
                     <select id="websiteIcon" required>
-                        <option value="fa-laptop">工作</option>
-                        <option value="fa-comment">工具</option>
-                        <option value="fa-film">生活</option>
-                        <option value="fa-seedling">学习</option>
+                        <option value="fa-laptop">工作</option><option value="fa-comment">工具</option>
+                        <option value="fa-film">生活</option><option value="fa-seedling">学习</option>
                     </select>
                 </div>
                 <div class="form-actions">
@@ -620,312 +209,412 @@
         </div>
     </div>
 
-    <!-- 核心JS - 优化版本 -->
+    <div class="modal" id="editWebsiteModal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <h3>编辑网站</h3>
+            <form id="editWebsiteForm">
+                <input type="hidden" id="editWebsiteId">
+                <div class="form-row"><label for="editWebsiteName">网站名称</label><input type="text" id="editWebsiteName" required></div>
+                <div class="form-row"><label for="editWebsiteUrl">网站URL</label><input type="url" id="editWebsiteUrl" required></div>
+                <div class="form-row"><label for="editWebsiteCategory">分类</label>
+                    <select id="editWebsiteCategory" required>
+                        <option value="work">工作</option><option value="social">工具</option>
+                        <option value="entertainment">生活</option><option value="learning">学习</option>
+                    </select>
+                </div>
+                <div class="form-row"><label for="editWebsiteIcon">网站图标</label>
+                    <select id="editWebsiteIcon" required>
+                        <option value="fa-laptop">工作</option><option value="fa-comment">工具</option>
+                        <option value="fa-film">生活</option><option value="fa-seedling">学习</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // 立即执行的核心功能
-        (function() {
-            'use strict';
+        const utils = {
+            showAlert(message, type = 'info') {
+                const alert = document.createElement('div');
+                const bgColor = type === 'error' ? '#e74c3c' : type === 'success' ? '#27ae60' : '#333';
+                alert.textContent = message;
+                alert.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: ${bgColor}; color: white; padding: 12px 24px; border-radius: 6px; z-index: 10000; font-size: 14px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); max-width: 80%; text-align: center;`;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+            },
             
-            // 配置和默认数据
-            const CONFIG = {
-                JSONBIN: {
-                    binId: '6919b2ddae596e708f5c9425',
-                    apiKey: '$2a$10$FLHYkDLXRAceGVMLjmGOo.HhWhMechh3.PhY8y9LlRcIqv/GYnLZi',
-                    baseUrl: 'https://api.jsonbin.io/v3/b'
-                }
-            };
-
-            // 使用方案二的图标
-            const DEFAULT_WEBSITES = [
-                { id: 1, name: "Google", url: "https://www.google.com", category: "work", icon: "fa-laptop" },
-                { id: 2, name: "GitHub", url: "https://github.com", category: "work", icon: "fa-laptop" },
-                { id: 3, name: "微信", url: "https://wx.qq.com", category: "social", icon: "fa-comment" },
-                { id: 4, name: "知乎", url: "https://www.zhihu.com", category: "social", icon: "fa-comment" },
-                { id: 5, name: "YouTube", url: "https://www.youtube.com", category: "entertainment", icon: "fa-film" },
-                { id: 6, name: "Bilibili", url: "https://www.bilibili.com", category: "entertainment", icon: "fa-film" },
-                { id: 7, name: "Coursera", url: "https://www.coursera.org", category: "learning", icon: "fa-seedling" },
-                { id: 8, name: "MDN Web", url: "https://developer.mozilla.org", category: "learning", icon: "fa-seedling" }
-            ];
-
-            // 状态管理
-            let state = {
-                websites: [],
-                currentCategory: 'work',
-                nextId: 1,
-                isEditMode: false
-            };
-
-            // 工具函数
-            const utils = {
-                generateDeletePassword() {
-                    const now = new Date();
-                    return `del${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+            safeStorage: {
+                set(key, data) {
+                    try { localStorage.setItem(key, JSON.stringify(data)); return true; } 
+                    catch (error) { utils.showAlert('保存数据失败', 'error'); return false; }
                 },
-                
-                showAlert(message) {
-                    const alert = document.createElement('div');
-                    alert.textContent = message;
-                    alert.style.cssText = `
-                        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-                        background: #333; color: white; padding: 10px 20px; border-radius: 5px;
-                        z-index: 10000; font-size: 14px;
-                    `;
-                    document.body.appendChild(alert);
-                    setTimeout(() => alert.remove(), 2000);
+                get(key, defaultValue = null) {
+                    try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : defaultValue; } 
+                    catch (error) { utils.showAlert('读取数据失败', 'error'); return defaultValue; }
                 }
-            };
+            },
+            
+            debounce(func, wait) {
+                let timeout; return function executedFunction(...args) {
+                    clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait);
+                };
+            }
+        };
 
-            // 数据管理
-            const dataManager = {
-                async loadWebsites() {
-                    try {
-                        // 先尝试本地存储
-                        const saved = localStorage.getItem('myNavigationWebsites');
-                        if (saved) {
-                            const websites = JSON.parse(saved);
-                            if (websites.length > 0) {
-                                state.websites = websites;
-                                state.nextId = Math.max(...websites.map(w => w.id)) + 1;
-                                return true;
-                            }
-                        }
-                        
-                        // 回退到默认数据
-                        state.websites = [...DEFAULT_WEBSITES];
-                        state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
+        const validator = {
+            isValidUrl(url) { try { return new URL(url).protocol === 'http:' || new URL(url).protocol === 'https:'; } catch { return false; } },
+            isValidName(name) { return name && name.trim().length > 0 && name.trim().length <= 20; },
+            isDuplicateWebsite(websites, newWebsite, excludeId = null) {
+                return websites.some(website => website.id !== excludeId && 
+                    (website.name.toLowerCase() === newWebsite.name.toLowerCase() || website.url === newWebsite.url));
+            },
+            validateWebsite(website, websites, isEdit = false) {
+                const errors = [];
+                if (!this.isValidName(website.name)) errors.push('网站名称不能为空且长度不能超过20个字符');
+                if (!this.isValidUrl(website.url)) errors.push('请输入有效的网址（http:// 或 https://）');
+                if (this.isDuplicateWebsite(websites, website, isEdit ? website.id : null)) errors.push('网站名称或网址已存在');
+                return { isValid: errors.length === 0, errors };
+            }
+        };
+
+        const App = {
+            state: {
+                websites: [], currentCategory: 'work', nextId: 1, isEditMode: false, dragSrcElement: null
+            },
+            eventsInitialized: false,
+            config: {
+                DEFAULT_WEBSITES: [
+                    { id: 1, name: "Google", url: "https://www.google.com", category: "work", icon: "fa-laptop" },
+                    { id: 2, name: "GitHub", url: "https://github.com", category: "work", icon: "fa-laptop" },
+                    { id: 3, name: "微信", url: "https://wx.qq.com", category: "social", icon: "fa-comment" },
+                    { id: 4, name: "知乎", url: "https://www.zhihu.com", category: "social", icon: "fa-comment" },
+                    { id: 5, name: "YouTube", url: "https://www.youtube.com", category: "entertainment", icon: "fa-film" },
+                    { id: 6, name: "Bilibili", url: "https://www.bilibili.com", category: "entertainment", icon: "fa-film" },
+                    { id: 7, name: "Coursera", url: "https://www.coursera.org", category: "learning", icon: "fa-seedling" },
+                    { id: 8, name: "MDN Web", url: "https://developer.mozilla.org", category: "learning", icon: "fa-seedling" }
+                ]
+            },
+            
+            async loadWebsites() {
+                const saved = utils.safeStorage.get('myNavigationWebsites');
+                if (saved?.length > 0) {
+                    this.state.websites = saved;
+                    this.state.nextId = Math.max(...saved.map(w => w.id)) + 1;
+                } else {
+                    this.state.websites = [...this.config.DEFAULT_WEBSITES];
+                    this.state.nextId = Math.max(...this.config.DEFAULT_WEBSITES.map(w => w.id)) + 1;
+                    this.saveWebsites();
+                }
+            },
+            
+            saveWebsites() { return utils.safeStorage.set('myNavigationWebsites', this.state.websites); },
+            
+            addWebsite(websiteData) {
+                const validation = validator.validateWebsite(websiteData, this.state.websites);
+                if (!validation.isValid) { validation.errors.forEach(error => utils.showAlert(error, 'error')); return false; }
+                
+                const newWebsite = {
+                    id: this.state.nextId++, name: websiteData.name.trim(),
+                    url: websiteData.url.startsWith('http') ? websiteData.url : 'https://' + websiteData.url,
+                    category: websiteData.category, icon: websiteData.icon
+                };
+                this.state.websites.push(newWebsite);
+                this.saveWebsites();
+                return true;
+            },
+            
+            updateWebsite(websiteId, websiteData) {
+                const validation = validator.validateWebsite(websiteData, this.state.websites, true);
+                if (!validation.isValid) { validation.errors.forEach(error => utils.showAlert(error, 'error')); return false; }
+                
+                const website = this.state.websites.find(w => w.id === websiteId);
+                if (website) {
+                    website.name = websiteData.name.trim();
+                    website.url = websiteData.url.startsWith('http') ? websiteData.url : 'https://' + websiteData.url;
+                    website.category = websiteData.category;
+                    website.icon = websiteData.icon;
+                    this.saveWebsites();
+                    return true;
+                }
+                return false;
+            },
+            
+            deleteWebsite(websiteId) {
+                this.state.websites = this.state.websites.filter(website => website.id !== websiteId);
+                this.saveWebsites();
+                return true;
+            },
+            
+            handleDragStart(e) {
+                if (!this.state.isEditMode) { e.preventDefault(); return false; }
+                this.state.dragSrcElement = e.target.closest('.website-card');
+                this.state.dragSrcElement.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', this.state.dragSrcElement.getAttribute('data-id'));
+                setTimeout(() => this.state.dragSrcElement.style.opacity = '0.4', 0);
+            },
+            
+            handleDragEnd(e) {
+                if (!this.state.isEditMode) return;
+                const card = e.target.closest('.website-card');
+                card.style.opacity = '1';
+                card.classList.remove('dragging');
+                document.querySelectorAll('.website-card').forEach(card => card.classList.remove('dragover'));
+            },
+            
+            handleDragOver(e) {
+                if (!this.state.isEditMode) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                return false;
+            },
+            
+            handleDragEnter(e) {
+                if (!this.state.isEditMode) return;
+                e.target.closest('.website-card')?.classList.add('dragover');
+            },
+            
+            handleDragLeave(e) {
+                if (!this.state.isEditMode) return;
+                const card = e.target.closest('.website-card');
+                if (card && !card.contains(e.relatedTarget)) {
+                    card.classList.remove('dragover');
+                }
+            },
+            
+            handleDrop(e) {
+                if (!this.state.isEditMode) return;
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const dropCard = e.target.closest('.website-card');
+                if (this.state.dragSrcElement && dropCard && this.state.dragSrcElement !== dropCard) {
+                    const dragId = parseInt(this.state.dragSrcElement.getAttribute('data-id'));
+                    const dropId = parseInt(dropCard.getAttribute('data-id'));
+                    const dragIndex = this.state.websites.findIndex(w => w.id === dragId);
+                    const dropIndex = this.state.websites.findIndex(w => w.id === dropId);
+                    
+                    if (dragIndex !== -1 && dropIndex !== -1) {
+                        [this.state.websites[dragIndex], this.state.websites[dropIndex]] = 
+                        [this.state.websites[dropIndex], this.state.websites[dragIndex]];
                         this.saveWebsites();
-                        return true;
-                        
-                    } catch (error) {
-                        console.error('加载数据失败:', error);
-                        state.websites = [...DEFAULT_WEBSITES];
-                        state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
-                        return true;
-                    }
-                },
-                
-                saveWebsites() {
-                    try {
-                        localStorage.setItem('myNavigationWebsites', JSON.stringify(state.websites));
-                        return true;
-                    } catch (error) {
-                        console.error('保存数据失败:', error);
-                        return false;
-                    }
-                }
-            };
-
-            // 渲染引擎
-            const renderer = {
-                init() {
-                    this.renderWebsites();
-                    this.initCoreEvents();
-                },
-                
-                renderWebsites() {
-                    const grids = {
-                        work: document.getElementById('work-grid'),
-                        social: document.getElementById('social-grid'),
-                        entertainment: document.getElementById('entertainment-grid'),
-                        learning: document.getElementById('learning-grid')
-                    };
-                    
-                    // 清空所有网格
-                    Object.values(grids).forEach(grid => {
-                        if (grid) grid.innerHTML = '';
-                    });
-                    
-                    // 渲染网站
-                    state.websites.forEach(website => {
-                        const grid = grids[website.category];
-                        if (!grid) return;
-                        
-                        const card = document.createElement('div');
-                        card.className = 'website-card';
-                        card.setAttribute('data-id', website.id);
-                        card.innerHTML = `
-                            <div class="edit-controls">
-                                <button class="delete-btn" data-id="${website.id}" title="删除网站">删</button>
-                                <button class="edit-btn" data-id="${website.id}" title="修改网站">改</button>
-                            </div>
-                            <a href="${website.url}" target="_blank" class="website-link">
-                                <div class="website-icon">
-                                    <i class="${website.icon}"></i>
-                                </div>
-                                <div class="website-name">${website.name}</div>
-                            </a>
-                        `;
-                        grid.appendChild(card);
-                    });
-                    
-                    // 移除加载提示
-                    document.querySelectorAll('.loading').forEach(loading => {
-                        loading.style.display = 'none';
-                    });
-                    
-                    // 初始化事件
-                    this.initCardEvents();
-                },
-                
-                initCoreEvents() {
-                    // 搜索功能
-                    const searchBtn = document.getElementById('searchButton');
-                    const searchInput = document.getElementById('searchInput');
-                    
-                    if (searchBtn && searchInput) {
-                        const performSearch = () => {
-                            const term = searchInput.value.trim();
-                            if (term) {
-                                window.open(`https://www.bing.com/search?q=${encodeURIComponent(term)}`, '_blank');
-                            }
-                        };
-                        
-                        searchBtn.addEventListener('click', performSearch);
-                        searchInput.addEventListener('keypress', (e) => {
-                            if (e.key === 'Enter') performSearch();
-                        });
-                    }
-                    
-                    // 分类切换
-                    document.querySelectorAll('.category-tab').forEach(tab => {
-                        tab.addEventListener('click', () => {
-                            const category = tab.dataset.category;
-                            
-                            // 更新活跃状态
-                            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                            document.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
-                            
-                            tab.classList.add('active');
-                            const content = document.getElementById(`${category}-content`);
-                            if (content) content.classList.add('active');
-                            
-                            state.currentCategory = category;
-                        });
-                    });
-                    
-                    // 初始化按钮
-                    const resetBtn = document.getElementById('resetDataBtn');
-                    if (resetBtn) {
-                        resetBtn.addEventListener('click', () => {
-                            if (confirm('确定要重置所有数据吗？')) {
-                                state.websites = [...DEFAULT_WEBSITES];
-                                state.nextId = Math.max(...DEFAULT_WEBSITES.map(w => w.id)) + 1;
-                                dataManager.saveWebsites();
-                                this.renderWebsites();
-                                utils.showAlert('数据重置成功！');
-                            }
-                        });
-                    }
-                    
-                    // 编辑模式切换
-                    document.querySelectorAll('.edit-mode-toggle').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const category = btn.dataset.category;
-                            state.isEditMode = !state.isEditMode;
-                            
-                            // 显示/隐藏编辑按钮
-                            document.querySelectorAll('.edit-controls').forEach(editControl => {
-                                editControl.style.display = state.isEditMode ? 'flex' : 'none';
-                            });
-                            
-                            // 更新按钮文本
-                            btn.textContent = state.isEditMode ? '完成' : '编辑';
-                        });
-                    });
-                    
-                    // 添加网站按钮
-                    document.querySelectorAll('.add-website-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            document.getElementById('websiteCategory').value = btn.dataset.category;
-                            document.getElementById('addWebsiteModal').style.display = 'flex';
-                        });
-                    });
-                    
-                    // 模态框事件
-                    document.getElementById('cancelBtn').addEventListener('click', () => {
-                        document.getElementById('addWebsiteModal').style.display = 'none';
-                    });
-                    
-                    // 添加网站表单
-                    document.getElementById('addWebsiteForm').addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        
-                        const name = document.getElementById('websiteName').value;
-                        const url = document.getElementById('websiteUrl').value;
-                        const category = document.getElementById('websiteCategory').value;
-                        const icon = document.getElementById('websiteIcon').value;
-                        
-                        const newWebsite = {
-                            id: state.nextId++,
-                            name: name,
-                            url: url.startsWith('http') ? url : 'https://' + url,
-                            category: category,
-                            icon: icon
-                        };
-                        
-                        state.websites.push(newWebsite);
-                        dataManager.saveWebsites();
                         this.renderWebsites();
-                        
-                        document.getElementById('addWebsiteModal').style.display = 'none';
-                        document.getElementById('addWebsiteForm').reset();
-                        
-                        utils.showAlert('网站添加成功！');
-                    });
-                    
-                    // 点击模态框外部关闭
-                    window.addEventListener('click', (e) => {
-                        if (e.target === document.getElementById('addWebsiteModal')) {
-                            document.getElementById('addWebsiteModal').style.display = 'none';
-                        }
-                    });
-                },
-                
-                initCardEvents() {
-                    // 使用事件委托处理动态生成的卡片
-                    document.addEventListener('click', (e) => {
-                        // 删除按钮
-                        if (e.target.closest('.delete-btn')) {
-                            const id = parseInt(e.target.closest('.delete-btn').dataset.id);
-                            if (confirm('确定要删除这个网站吗？')) {
-                                state.websites = state.websites.filter(w => w.id !== id);
-                                dataManager.saveWebsites();
-                                this.renderWebsites();
-                                utils.showAlert('网站删除成功！');
-                            }
-                        }
-                        
-                        // 编辑按钮
-                        if (e.target.closest('.edit-btn')) {
-                            const id = parseInt(e.target.closest('.edit-btn').dataset.id);
-                            const website = state.websites.find(w => w.id === id);
-                            if (website) {
-                                document.getElementById('websiteName').value = website.name;
-                                document.getElementById('websiteUrl').value = website.url;
-                                document.getElementById('websiteCategory').value = website.category;
-                                document.getElementById('websiteIcon').value = website.icon;
-                                
-                                // 临时存储编辑的网站ID
-                                document.getElementById('addWebsiteForm').dataset.editingId = id;
-                                document.getElementById('addWebsiteModal').style.display = 'flex';
-                            }
-                        }
-                    });
+                        utils.showAlert('网站顺序已更新！', 'success');
+                    }
                 }
-            };
-
-            // 应用启动
-            document.addEventListener('DOMContentLoaded', async function() {
-                console.log('🚀 快速启动中...');
                 
-                // 立即显示界面
-                await dataManager.loadWebsites();
-                renderer.init();
+                dropCard?.classList.remove('dragover');
+                return false;
+            },
+            
+            initDragAndDrop() {
+                const dragEvents = [
+                    ['dragstart', this.handleDragStart.bind(this)],
+                    ['dragend', this.handleDragEnd.bind(this)],
+                    ['dragover', this.handleDragOver.bind(this)],
+                    ['dragenter', this.handleDragEnter.bind(this)],
+                    ['dragleave', this.handleDragLeave.bind(this)],
+                    ['drop', this.handleDrop.bind(this)]
+                ];
                 
-                console.log('✅ 应用启动完成');
-            });
+                document.querySelectorAll('.website-card').forEach(card => {
+                    dragEvents.forEach(([event, handler]) => {
+                        card.addEventListener(event, handler);
+                    });
+                });
+            },
+            
+            performSearch(searchTerm) {
+                if (!searchTerm.trim()) return;
+                const keywords = searchTerm.toLowerCase().split(/\s+/).filter(k => k.length > 0);
+                if (keywords.length === 0) return;
+                window.open(`https://www.bing.com/search?q=${encodeURIComponent(keywords.join('+'))}`, '_blank');
+            },
+            
+            createWebsiteCard(website) {
+                const card = document.createElement('div');
+                card.className = 'website-card';
+                card.setAttribute('data-id', website.id);
+                card.setAttribute('draggable', this.state.isEditMode ? 'true' : 'false');
+                card.innerHTML = `
+                    <div class="edit-controls" style="display: ${this.state.isEditMode ? 'flex' : 'none'}">
+                        <button class="delete-btn" data-id="${website.id}" title="删除网站">删</button>
+                        <button class="edit-btn" data-id="${website.id}" title="修改网站">改</button>
+                    </div>
+                    <a href="${website.url}" target="_blank" class="website-link">
+                        <div class="website-icon" data-category="${website.category}"><i class="${website.icon}"></i></div>
+                        <div class="website-name">${website.name}</div>
+                    </a>`;
+                return card;
+            },
+            
+            renderWebsites() {
+                ['work', 'social', 'entertainment', 'learning'].forEach(category => {
+                    const grid = document.getElementById(`${category}-grid`);
+                    if (grid) {
+                        grid.innerHTML = '';
+                        this.state.websites.filter(website => website.category === category).forEach(website => {
+                            grid.appendChild(this.createWebsiteCard(website));
+                        });
+                        const loading = grid.querySelector('.loading');
+                        if (loading) loading.style.display = 'none';
+                    }
+                });
+                this.initDragAndDrop();
+                this.initCardEvents();
+            },
+            
+            initCardEvents() {
+                if (this.eventsInitialized) return;
+                
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-btn')) {
+                        const id = parseInt(e.target.closest('.delete-btn').dataset.id);
+                        if (confirm('确定要删除这个网站吗？') && this.deleteWebsite(id)) {
+                            utils.showAlert('网站删除成功！', 'success');
+                            this.renderWebsites();
+                        }
+                    }
+                    
+                    if (e.target.closest('.edit-btn')) {
+                        const id = parseInt(e.target.closest('.edit-btn').dataset.id);
+                        const website = this.state.websites.find(w => w.id === id);
+                        if (website) {
+                            document.getElementById('editWebsiteId').value = website.id;
+                            document.getElementById('editWebsiteName').value = website.name;
+                            document.getElementById('editWebsiteUrl').value = website.url;
+                            document.getElementById('editWebsiteCategory').value = website.category;
+                            document.getElementById('editWebsiteIcon').value = website.icon;
+                            this.showModal('editWebsiteModal');
+                        }
+                    }
+                });
+                
+                this.eventsInitialized = true;
+            },
+            
+            init() {
+                this.eventsInitialized = false;
+                
+                document.querySelectorAll('.category-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const category = tab.dataset.category;
+                        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
+                        tab.classList.add('active');
+                        document.getElementById(`${category}-content`).classList.add('active');
+                        this.state.currentCategory = category;
+                    });
+                });
+                
+                const searchInput = document.getElementById('searchInput');
+                const debouncedSearch = utils.debounce(() => this.performSearch(searchInput.value), 300);
+                searchInput.addEventListener('input', debouncedSearch);
+                document.getElementById('searchButton').addEventListener('click', () => this.performSearch(searchInput.value));
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.performSearch(searchInput.value);
+                });
+                
+                document.querySelectorAll('.edit-mode-toggle').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.state.isEditMode = !this.state.isEditMode;
+                        document.querySelectorAll('.edit-controls').forEach(editControl => {
+                            editControl.style.display = this.state.isEditMode ? 'flex' : 'none';
+                        });
+                        document.querySelectorAll('.website-card').forEach(card => {
+                            card.setAttribute('draggable', this.state.isEditMode ? 'true' : 'false');
+                        });
+                        document.querySelectorAll('.edit-mode-toggle').forEach(btn => {
+                            btn.textContent = this.state.isEditMode ? '完成' : '编辑';
+                        });
+                        this.initDragAndDrop();
+                    });
+                });
+                
+                document.querySelectorAll('.add-website-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.getElementById('websiteCategory').value = btn.dataset.category;
+                        this.showModal('addWebsiteModal');
+                    });
+                });
+                
+                document.getElementById('addWebsiteForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = {
+                        name: document.getElementById('websiteName').value,
+                        url: document.getElementById('websiteUrl').value,
+                        category: document.getElementById('websiteCategory').value,
+                        icon: document.getElementById('websiteIcon').value
+                    };
+                    if (this.addWebsite(formData)) {
+                        this.hideModal('addWebsiteModal');
+                        document.getElementById('addWebsiteForm').reset();
+                        utils.showAlert('网站添加成功！', 'success');
+                        this.renderWebsites();
+                    }
+                });
+                
+                document.getElementById('editWebsiteForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = {
+                        name: document.getElementById('editWebsiteName').value,
+                        url: document.getElementById('editWebsiteUrl').value,
+                        category: document.getElementById('editWebsiteCategory').value,
+                        icon: document.getElementById('editWebsiteIcon').value
+                    };
+                    const websiteId = parseInt(document.getElementById('editWebsiteId').value);
+                    if (this.updateWebsite(websiteId, formData)) {
+                        this.hideModal('editWebsiteModal');
+                        utils.showAlert('网站修改成功！', 'success');
+                        this.renderWebsites();
+                    }
+                });
+                
+                document.getElementById('cancelBtn').addEventListener('click', () => this.hideModal('addWebsiteModal'));
+                document.getElementById('cancelEditBtn').addEventListener('click', () => this.hideModal('editWebsiteModal'));
+                
+                document.getElementById('resetDataBtn').addEventListener('click', () => {
+                    if (confirm('确定要重置所有数据吗？')) {
+                        this.state.websites = [...this.config.DEFAULT_WEBSITES];
+                        this.state.nextId = Math.max(...this.config.DEFAULT_WEBSITES.map(w => w.id)) + 1;
+                        this.saveWebsites();
+                        this.renderWebsites();
+                        utils.showAlert('数据重置成功！', 'success');
+                    }
+                });
+                
+                window.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('modal')) {
+                        this.hideModal(e.target.id);
+                        e.target.querySelector('form')?.reset();
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        document.querySelectorAll('.modal').forEach(modal => {
+                            if (modal.style.display === 'flex') {
+                                this.hideModal(modal.id);
+                                modal.querySelector('form')?.reset();
+                            }
+                        });
+                    }
+                });
+            },
+            
+            showModal(modalId) { document.getElementById(modalId).style.display = 'flex'; },
+            hideModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        };
 
-        })();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await App.loadWebsites();
+            App.init();
+            App.renderWebsites();
+        });
     </script>
 </body>
 </html>
